@@ -1,0 +1,3697 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Smart Inhaler App</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "DM Sans", sans-serif;
+        background-color: #0e0e14;
+        color: #1f2937;
+      }
+      .bg-brand-blue {
+        background-color: #2563eb;
+      }
+      .text-brand-blue {
+        color: #2563eb;
+      }
+      .bg-soft-blue {
+        background-color: #f0f7ff;
+      }
+      .border-soft-blue {
+        border-color: #e2e8f0;
+      }
+
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: flex;
+      }
+
+      .tab-btn {
+        cursor: pointer;
+        padding: 10px 28px;
+        border-radius: 99px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        outline: none;
+        transition: all 0.2s;
+        color: #6b7280;
+        background: transparent;
+      }
+      .tab-btn.active {
+        background: #2563eb;
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+      }
+
+      .field-wrap {
+        position: relative;
+      }
+      .field-wrap input,
+      .field-wrap select {
+        width: 100%;
+        background: #f8fafc;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 18px 16px 6px 16px;
+        font-size: 14px;
+        font-family: "DM Sans", sans-serif;
+        color: #1f2937;
+        outline: none;
+        transition: border 0.2s;
+        appearance: none;
+      }
+      .field-wrap input:focus,
+      .field-wrap select:focus {
+        border-color: #2563eb;
+        background: #fff;
+      }
+      .field-wrap label {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 13px;
+        color: #9ca3af;
+        font-weight: 500;
+        pointer-events: none;
+        transition: all 0.18s;
+      }
+      .field-wrap input:focus ~ label,
+      .field-wrap input:not(:placeholder-shown) ~ label,
+      .field-wrap select:focus ~ label,
+      .field-wrap select:valid ~ label {
+        top: 10px;
+        transform: none;
+        font-size: 10px;
+        color: #2563eb;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .pw-toggle {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #9ca3af;
+      }
+
+      .dose-btn {
+        flex: 1;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 10px;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: transparent;
+        color: #9ca3af;
+      }
+      .dose-btn.active {
+        background: #2563eb;
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+      }
+
+      input[type="date"],
+      input[type="time"] {
+        font-family: "DM Mono", monospace;
+      }
+
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 99px;
+      }
+
+      .dark-bg {
+        background: #0e0e14;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .screen.active > * {
+        animation: fadeUp 0.3s ease forwards;
+      }
+
+      .bar-fill {
+        height: 100%;
+        border-radius: 99px;
+        background: #2563eb;
+        transition: width 0.6s ease;
+      }
+
+      .ring-bg {
+        stroke: #f1f5f9;
+      }
+      .ring-fill {
+        stroke: #2563eb;
+        stroke-dasharray: 176;
+        stroke-dashoffset: 26;
+        stroke-linecap: round;
+      }
+
+      .chart-bar-bg {
+        height: 72px;
+        width: 7px;
+        background: #e2e8f0;
+        border-radius: 99px;
+        position: relative;
+      }
+      .chart-bar-fill {
+        width: 100%;
+        border-radius: 99px;
+        position: absolute;
+        bottom: 0;
+        background: #2563eb;
+        transition: height 0.5s ease;
+      }
+      .chart-bar-fill.emergency {
+        background: #ef4444;
+      }
+
+      .time-tab {
+        flex: 1;
+        padding: 8px;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 500;
+        color: #64748b;
+        border-radius: 12px;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        transition: all 0.2s;
+      }
+      .time-tab.active {
+        font-weight: 700;
+        color: #2563eb;
+        background: #fff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      }
+
+      .activity-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .card-shadow {
+        box-shadow:
+          0 4px 6px -1px rgba(0, 0, 0, 0.05),
+          0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      }
+      .device-card-shadow {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      }
+      .custom-input {
+        border: none !important;
+        background-color: #ffffff;
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        padding: 0.75rem 1rem;
+        width: 100%;
+        color: #334155;
+        font-weight: 500;
+      }
+      .custom-input-readonly {
+        background-color: #f1f5f9;
+        color: #64748b;
+      }
+      .section-container {
+        background-color: #f1f5f9;
+        border-radius: 1rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .section-container-white {
+        background-color: #f8fafc;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .border-emergency {
+        border-left: 4px solid #c2410c;
+      }
+      .border-medical {
+        border-left: 4px solid #0d9488;
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen flex flex-col items-center justify-start py-10 gap-6"
+  >
+    <!-- TAB NAVIGATION -->
+    <div
+      style="
+        background: #1a1a26;
+        border: 1px solid #2a2a3a;
+        border-radius: 99px;
+        display: flex;
+        gap: 4px;
+        padding: 4px;
+        flex-wrap: wrap;
+        justify-content: center;
+      "
+    >
+      <button class="tab-btn active" onclick="showScreen('login')">
+        Login
+      </button>
+      <button class="tab-btn" onclick="showScreen('dashboard')">
+        Dashboard
+      </button>
+      <button class="tab-btn" onclick="showScreen('historico')">
+        Histórico
+      </button>
+      <button class="tab-btn" onclick="showScreen('dados')">Dados</button>
+      <button class="tab-btn" onclick="showScreen('lembretes')">
+        Lembretes
+      </button>
+      <button class="tab-btn" onclick="showScreen('registry')">Registar</button>
+      <button class="tab-btn" onclick="showScreen('perfil')">Perfil</button>
+      <button class="tab-btn" onclick="showScreen('definicoes')">
+        Definições
+      </button>
+    </div>
+
+    <!-- ========== LOGIN SCREEN ========== -->
+    <section
+      class="screen active w-[375px] h-[812px] bg-white rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black"
+      id="screen-login"
+    >
+      <div
+        class="px-8 pt-16 flex flex-col items-center flex-1 overflow-y-auto pb-8"
+      >
+        <div
+          class="w-12 h-12 bg-soft-blue rounded-full flex items-center justify-center mb-4"
+        >
+          <svg
+            class="w-6 h-6 text-brand-blue"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+        </div>
+        <span class="font-bold text-gray-800 tracking-tight mb-8"
+          >Smart Inhaler</span
+        >
+        <div class="w-full">
+          <h1 class="text-2xl font-bold text-gray-900 leading-tight">
+            Bem-vindo de volta,
+          </h1>
+          <p class="text-sm text-gray-500 mt-2 mb-8">
+            Faz login e começa a acompanhar a tua respiração
+          </p>
+
+          <div class="space-y-4">
+            <div class="field-wrap">
+              <input
+                type="email"
+                id="login-email"
+                placeholder=" "
+                autocomplete="email"
+              />
+              <label for="login-email">Email</label>
+            </div>
+            <div class="field-wrap" style="position: relative">
+              <input
+                type="password"
+                id="login-pw"
+                placeholder=" "
+                autocomplete="current-password"
+                style="padding-right: 44px"
+              />
+              <label for="login-pw">Palavra-passe</label>
+              <span class="pw-toggle" onclick="togglePw('login-pw', this)">
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+                </svg>
+              </span>
+              <a
+                href="#"
+                class="absolute right-10 top-3 text-[10px] text-brand-blue font-bold"
+                style="top: 8px; right: 44px; font-size: 10px"
+                >Esqueceu-se?</a
+              >
+            </div>
+          </div>
+
+          <button
+            class="w-full bg-brand-blue text-white font-bold py-4 rounded-2xl mt-8 shadow-lg shadow-blue-100 hover:opacity-90 transition-opacity"
+            onclick="showScreen('dashboard')"
+          >
+            Entrar
+          </button>
+
+          <div class="flex items-center my-6">
+            <div class="flex-grow h-px bg-gray-100"></div>
+            <span
+              class="px-4 text-[10px] text-gray-400 font-bold uppercase tracking-widest"
+              >ou</span
+            >
+            <div class="flex-grow h-px bg-gray-100"></div>
+          </div>
+
+          <button
+            class="w-full border border-gray-100 py-3 rounded-2xl flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 48 48">
+              <path
+                fill="#EA4335"
+                d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+              />
+              <path
+                fill="#4285F4"
+                d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+              />
+              <path
+                fill="#34A853"
+                d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+              />
+            </svg>
+            <span class="text-sm font-semibold text-gray-700"
+              >Entra com a tua conta Google</span
+            >
+          </button>
+        </div>
+      </div>
+      <div class="pb-8 text-center px-8">
+        <p class="text-xs text-gray-500 mb-4">
+          Novo aqui?
+          <a class="text-brand-blue font-bold" href="#">Crie uma conta</a>
+        </p>
+        <div
+          class="flex justify-center gap-4 text-[10px] font-bold text-gray-300 uppercase tracking-tighter"
+        >
+          <a href="#">Privacidade</a><a href="#">Termos</a
+          ><a href="#">Suporte</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== DASHBOARD SCREEN ========== -->
+    <section
+      class="screen w-[375px] h-[812px] bg-[#F8FAFC] rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black"
+      id="screen-dashboard"
+    >
+      <div class="px-6 pt-12 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-8 h-8 rounded-full bg-brand-blue flex items-center justify-center text-white text-xs font-bold"
+          >
+            JM
+          </div>
+          <span class="text-xs font-bold text-brand-blue">Smart Inhaler</span>
+        </div>
+        <button class="text-gray-400">
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+            <path
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-6 py-4 space-y-4 pb-24">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900">Bom dia, João.</h2>
+          <p class="text-xs text-gray-400 font-medium">
+            Pronto para a tua rotina diária?
+          </p>
+        </div>
+
+        <div
+          class="bg-brand-blue rounded-3xl p-5 text-white flex items-center justify-between shadow-lg shadow-blue-100 cursor-pointer hover:opacity-95 transition-opacity"
+          onclick="showScreen('registry')"
+        >
+          <div class="flex items-center gap-4">
+            <div
+              class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-sm">Registar Inalação</h3>
+              <p class="text-[10px] opacity-80">
+                Registar uma dose manualmente
+              </p>
+            </div>
+          </div>
+          <svg
+            class="w-5 h-5 opacity-60"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M9 5l7 7-7 7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+        </div>
+
+        <div
+          class="bg-white rounded-3xl p-5 border border-gray-100 flex items-center justify-between"
+        >
+          <div class="flex items-center gap-4">
+            <div
+              class="w-10 h-10 bg-soft-blue rounded-full flex items-center justify-center text-brand-blue"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <div>
+              <span
+                class="text-[9px] uppercase font-bold text-gray-400 tracking-wider"
+                >Última Utilização</span
+              >
+              <p class="font-bold text-gray-800">Hoje às 08:42</p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-white rounded-3xl p-6 border border-gray-100 flex justify-between items-center"
+        >
+          <div>
+            <span
+              class="text-[9px] uppercase font-bold text-gray-400 tracking-wider"
+              >Aderência</span
+            >
+            <p class="text-2xl font-bold text-gray-900 mt-1">85%</p>
+            <span
+              class="inline-flex items-center gap-1 bg-soft-blue text-brand-blue text-[9px] font-bold px-2 py-1 rounded-full mt-2"
+            >
+              <svg class="w-2 h-2" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  clip-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  fill-rule="evenodd"
+                />
+              </svg>
+              falta 1 dose
+            </span>
+          </div>
+          <div class="relative w-16 h-16 flex items-center justify-center">
+            <svg class="w-full h-full -rotate-90" viewBox="0 0 64 64">
+              <circle
+                cx="32"
+                cy="32"
+                fill="transparent"
+                r="28"
+                class="ring-bg"
+                stroke-width="6"
+              />
+              <circle
+                cx="32"
+                cy="32"
+                fill="transparent"
+                r="28"
+                class="ring-fill"
+                stroke-width="6"
+              />
+            </svg>
+            <span class="absolute text-[10px] font-bold">85%</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-white rounded-3xl p-5 border border-gray-100">
+            <div class="flex justify-between items-start mb-4">
+              <svg
+                class="w-4 h-4 text-brand-blue"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071a9.5 9.5 0 0114.142 0M2.808 7.929a14.5 14.5 0 0120.384 0"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                />
+              </svg>
+              <span class="text-[8px] uppercase font-bold text-gray-300"
+                >Estado</span
+              >
+            </div>
+            <p class="font-bold text-sm">Online</p>
+            <p class="text-[8px] text-gray-400">Sincronizado há 2m</p>
+          </div>
+          <div class="bg-white rounded-3xl p-5 border border-gray-100">
+            <div class="flex justify-between items-start mb-4">
+              <svg
+                class="w-4 h-4 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M4.5 10.5h12.75V15H4.5v-4.5zM3.75 18h15a2.25 2.25 0 002.25-2.25V8.25A2.25 2.25 0 0018.75 6H3.75A2.25 2.25 0 001.5 8.25v7.5A2.25 2.25 0 003.75 18z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                />
+              </svg>
+              <span class="text-[8px] uppercase font-bold text-gray-300"
+                >Bateria</span
+              >
+            </div>
+            <p class="font-bold text-sm">85%</p>
+            <p class="text-[8px] text-gray-400">~12 dias restantes</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 border border-gray-100">
+          <span
+            class="text-[9px] uppercase font-bold text-brand-blue tracking-wider"
+            >Estado do Dispositivo</span
+          >
+          <h3 class="text-xl font-bold text-gray-900 mt-2 mb-1">
+            Nível de Medicação
+          </h3>
+          <p class="text-[9px] text-gray-400 mb-4">
+            Ventolin Evohaler — Ligação Inteligente
+          </p>
+          <div class="flex items-end gap-1">
+            <span class="text-4xl font-bold">65</span>
+            <span class="text-lg font-bold text-gray-400 mb-1">%</span>
+          </div>
+          <div class="w-full bg-gray-100 h-2 rounded-full mt-3 overflow-hidden">
+            <div class="bar-fill" style="width: 65%"></div>
+          </div>
+        </div>
+
+        <div class="bg-[#E9F7F5] rounded-3xl p-6 border border-[#D1ECEA]">
+          <div class="flex justify-between items-start mb-4">
+            <div
+              class="w-10 h-10 bg-white/60 rounded-full flex items-center justify-center text-[#1A9C8E]"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <span
+              class="bg-[#1A9C8E] text-white text-[8px] font-bold px-3 py-1 rounded-full uppercase"
+              >Ideal</span
+            >
+          </div>
+          <h3 class="text-sm font-bold text-gray-800">Qualidade do Ar</h3>
+          <p class="text-xl font-bold text-[#1A9C8E] mt-1 mb-3">12 IQA</p>
+          <p class="text-[9px] text-[#1A9C8E] opacity-70 leading-relaxed">
+            Nível de pólen baixo hoje. Ótima altura para um passeio.
+          </p>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <nav
+        class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-between px-6 pt-3 pb-8"
+      >
+        <div class="flex flex-col items-center gap-1 text-brand-blue">
+          <div
+            class="w-6 h-6 flex items-center justify-center bg-soft-blue rounded-lg"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M2 4a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V4zM2 14a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2zM12 4a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V4zM12 14a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+              />
+            </svg>
+          </div>
+          <span class="text-[8px] font-bold uppercase">Início</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('historico')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Histórico</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('dados')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Dados</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('lembretes')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Lembretes</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('perfil')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Perfil</span>
+        </div>
+      </nav>
+    </section>
+
+    <!-- ========== HISTÓRICO SCREEN ========== -->
+    <section
+      class="screen w-[375px] h-[812px] bg-[#F8FAFC] rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black"
+      id="screen-historico"
+    >
+      <div class="px-6 pt-12 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-8 h-8 rounded-full bg-brand-blue flex items-center justify-center text-white text-xs font-bold"
+          >
+            JM
+          </div>
+          <span class="text-xs font-bold text-brand-blue">Smart Inhaler</span>
+        </div>
+        <button class="text-gray-400">
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+            <path
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-6 pb-24">
+        <div class="py-4">
+          <h1 class="text-3xl font-bold text-gray-900 leading-tight">
+            Histórico de<br />Utilização
+          </h1>
+          <p class="text-gray-400 mt-1 text-xs">
+            Acompanhe a sua jornada respiratória.
+          </p>
+        </div>
+
+        <div class="bg-slate-100 p-1 rounded-2xl flex mb-4">
+          <button class="time-tab" onclick="setTimeframe('dia', this)">
+            Dia
+          </button>
+          <button
+            class="time-tab active"
+            onclick="setTimeframe('semana', this)"
+          >
+            Semana
+          </button>
+          <button class="time-tab" onclick="setTimeframe('mes', this)">
+            Mês
+          </button>
+        </div>
+
+        <div
+          class="bg-white rounded-3xl border border-gray-100 p-6 mb-4 shadow-sm"
+        >
+          <div class="flex justify-between items-start mb-8">
+            <div>
+              <p
+                class="text-[9px] uppercase font-bold text-gray-400 tracking-wider"
+              >
+                Doses totais
+              </p>
+              <div class="flex items-baseline gap-2 mt-1">
+                <span class="text-4xl font-bold text-gray-900">24</span>
+                <span
+                  class="bg-red-50 text-red-500 text-[10px] font-bold px-2 py-0.5 rounded-full"
+                  >-5%</span
+                >
+              </div>
+            </div>
+            <div class="text-right">
+              <p
+                class="text-[9px] uppercase font-bold text-gray-400 tracking-wider"
+              >
+                Média diária
+              </p>
+              <p class="text-3xl font-bold text-gray-900 mt-1">3.4</p>
+            </div>
+          </div>
+          <div
+            class="flex justify-between items-end px-1"
+            id="hist-chart"
+          ></div>
+        </div>
+
+        <div class="flex gap-4 mb-4 px-1">
+          <div class="flex items-center gap-1.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-brand-blue"></div>
+            <span class="text-[10px] font-bold text-gray-400">Manutenção</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+            <span class="text-[10px] font-bold text-gray-400">Emergência</span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-base font-bold text-gray-900">Atividades Recentes</h2>
+          <button
+            class="text-brand-blue text-[10px] font-bold uppercase tracking-tight"
+          >
+            Exportar CSV
+          </button>
+        </div>
+
+        <div class="space-y-3 pb-4">
+          <p
+            class="text-[9px] font-bold text-gray-400 uppercase tracking-wider px-1"
+          >
+            Hoje
+          </p>
+          <div class="activity-item">
+            <div class="flex items-center gap-3">
+              <div class="activity-icon" style="background: #eff6ff">
+                <svg
+                  class="w-5 h-5"
+                  style="color: #2563eb"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-gray-800">
+                  Dose de Manutenção
+                </p>
+                <div class="flex items-center gap-3 mt-0.5">
+                  <span
+                    class="text-[10px] text-gray-400 flex items-center gap-1"
+                    ><svg
+                      class="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      /></svg
+                    >08:42</span
+                  >
+                  <span
+                    class="text-[10px] text-gray-400 flex items-center gap-1"
+                    ><svg
+                      class="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      /></svg
+                    >Casa</span
+                  >
+                </div>
+              </div>
+            </div>
+            <span class="text-[9px] font-bold text-gray-300 uppercase"
+              >Hoje</span
+            >
+          </div>
+
+          <p
+            class="text-[9px] font-bold text-gray-400 uppercase tracking-wider px-1 pt-2"
+          >
+            Ontem
+          </p>
+          <div class="activity-item">
+            <div class="flex items-center gap-3">
+              <div class="activity-icon" style="background: #f0fdf9">
+                <svg
+                  class="w-5 h-5"
+                  style="color: #0d9488"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-gray-800">
+                  Dose de Manutenção
+                </p>
+                <div class="flex items-center gap-3 mt-0.5">
+                  <span
+                    class="text-[10px] text-gray-400 flex items-center gap-1"
+                    ><svg
+                      class="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      /></svg
+                    >23:15</span
+                  >
+                  <span
+                    class="text-[10px] text-gray-400 flex items-center gap-1"
+                    ><svg
+                      class="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      /></svg
+                    >Parque da Ponte</span
+                  >
+                </div>
+              </div>
+            </div>
+            <span class="text-[9px] font-bold text-gray-300 uppercase"
+              >Ontem</span
+            >
+          </div>
+
+          <p
+            class="text-[9px] font-bold text-gray-400 uppercase tracking-wider px-1 pt-2"
+          >
+            Anteriores
+          </p>
+          <div class="activity-item">
+            <div class="flex items-center gap-3">
+              <div class="activity-icon" style="background: #fef2f2">
+                <svg
+                  class="w-5 h-5"
+                  style="color: #ef4444"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-gray-800">
+                  Dose de Emergência
+                </p>
+                <div class="flex items-center gap-3 mt-0.5">
+                  <span
+                    class="text-[10px] text-gray-400 flex items-center gap-1"
+                    ><svg
+                      class="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      /></svg
+                    >15:10</span
+                  >
+                  <span
+                    class="text-[10px] text-gray-400 flex items-center gap-1"
+                    ><svg
+                      class="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      /></svg
+                    >Ginásio</span
+                  >
+                </div>
+              </div>
+            </div>
+            <span
+              class="text-[9px] font-bold text-gray-300 uppercase whitespace-nowrap"
+              >24 Out</span
+            >
+          </div>
+          <div class="activity-item">
+            <div class="flex items-center gap-3">
+              <div class="activity-icon" style="background: #eff6ff">
+                <svg
+                  class="w-5 h-5"
+                  style="color: #2563eb"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-gray-800">
+                  Dose de Manutenção
+                </p>
+                <div class="flex items-center gap-3 mt-0.5">
+                  <span
+                    class="text-[10px] text-gray-400 flex items-center gap-1"
+                    ><svg
+                      class="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      /></svg
+                    >09:20</span
+                  >
+                  <span
+                    class="text-[10px] text-gray-400 flex items-center gap-1"
+                    ><svg
+                      class="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      /></svg
+                    >Casa</span
+                  >
+                </div>
+              </div>
+            </div>
+            <span
+              class="text-[9px] font-bold text-gray-300 uppercase whitespace-nowrap"
+              >23 Out</span
+            >
+          </div>
+          <div class="activity-item">
+            <div class="flex items-center gap-3">
+              <div class="activity-icon" style="background: #eff6ff">
+                <svg
+                  class="w-5 h-5"
+                  style="color: #2563eb"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-gray-800">
+                  Dose de Manutenção
+                </p>
+                <div class="flex items-center gap-3 mt-0.5">
+                  <span
+                    class="text-[10px] text-gray-400 flex items-center gap-1"
+                    ><svg
+                      class="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      /></svg
+                    >08:05</span
+                  >
+                  <span
+                    class="text-[10px] text-gray-400 flex items-center gap-1"
+                    ><svg
+                      class="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      /></svg
+                    >Trabalho</span
+                  >
+                </div>
+              </div>
+            </div>
+            <span
+              class="text-[9px] font-bold text-gray-300 uppercase whitespace-nowrap"
+              >22 Out</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <nav
+        class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-between px-6 pt-3 pb-8"
+      >
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('dashboard')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Início</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 text-brand-blue">
+          <div
+            class="w-6 h-6 flex items-center justify-center bg-soft-blue rounded-lg"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+          </div>
+          <span class="text-[8px] font-bold uppercase">Histórico</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('dados')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Dados</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('lembretes')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Lembretes</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('perfil')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Perfil</span>
+        </div>
+      </nav>
+    </section>
+
+    <!-- ========== DADOS SCREEN ========== -->
+    <section
+      class="screen w-[375px] h-[812px] bg-[#F8FAFC] rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black"
+      id="screen-dados"
+    >
+      <div
+        class="px-6 pt-12 flex justify-between items-center bg-white border-b border-slate-50"
+      >
+        <div class="flex items-center gap-3 pb-3">
+          <div
+            class="w-8 h-8 rounded-full bg-brand-blue flex items-center justify-center text-white text-xs font-bold"
+          >
+            JM
+          </div>
+          <span class="text-xs font-bold text-brand-blue">Smart Inhaler</span>
+        </div>
+        <button class="text-gray-400 pb-3">
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+            <path
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-5 pb-24 space-y-4 pt-4">
+        <div>
+          <p
+            class="text-[10px] font-bold text-teal-600 uppercase tracking-widest mb-1"
+          >
+            Análise de Dados
+          </p>
+          <h1 class="text-2xl font-bold text-gray-900 leading-tight">
+            Análise do Inalador
+          </h1>
+          <p class="text-xs text-gray-400 mt-1 leading-relaxed">
+            Técnica em tempo real e métricas dos últimos 7 dias.
+          </p>
+        </div>
+
+        <div
+          class="bg-white rounded-3xl p-5 border border-slate-100 relative overflow-hidden"
+          style="box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05)"
+        >
+          <div class="flex justify-between items-start mb-1">
+            <p
+              class="text-[9px] font-bold text-gray-400 uppercase tracking-wider leading-tight"
+            >
+              Pontuação da<br />Técnica de Inalação
+            </p>
+            <button
+              class="text-[10px] font-bold text-brand-blue flex items-center gap-0.5"
+            >
+              Ver tudo
+              <svg
+                class="w-3 h-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M9 5l7 7-7 7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                />
+              </svg>
+            </button>
+          </div>
+          <div class="flex items-end gap-2 mb-1">
+            <span class="text-5xl font-black text-brand-blue">92</span>
+            <span class="text-lg font-bold text-gray-300 mb-1">/ 100</span>
+          </div>
+          <p
+            class="text-sm font-bold text-teal-500 flex items-center gap-1 mb-5"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+              />
+            </svg>
+            Excelente Técnica
+          </p>
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-[10px] font-bold mb-1">
+                <span class="text-gray-700">Consistência</span
+                ><span class="text-brand-blue">88%</span>
+              </div>
+              <div class="w-full bg-slate-100 h-1.5 rounded-full">
+                <div
+                  class="bg-brand-blue h-1.5 rounded-full"
+                  style="width: 88%"
+                ></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px] font-bold mb-1">
+                <span class="text-gray-700">Precisão de Tempo</span
+                ><span class="text-brand-blue">95%</span>
+              </div>
+              <div class="w-full bg-slate-100 h-1.5 rounded-full">
+                <div
+                  class="bg-brand-blue h-1.5 rounded-full"
+                  style="width: 95%"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="absolute top-8 right-5 opacity-[0.07] pointer-events-none"
+          >
+            <svg
+              fill="none"
+              height="72"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              width="72"
+            >
+              <path
+                d="M7 12c-2.5 0-4.5 2-4.5 4.5S4.5 21 7 21s4.5-2 4.5-4.5V12M17 12c2.5 0 4.5 2 4.5 4.5S19.5 21 17 21s-4.5-2-4.5-4.5V12M12 4v8M9 4h6"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <div
+          class="bg-orange-50 rounded-3xl p-5 flex gap-3 border border-orange-100"
+        >
+          <div
+            class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-orange-400 flex-shrink-0 shadow-sm"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-800 text-sm">
+              Inalador Baixo: 12 doses restantes
+            </h3>
+            <p class="text-xs text-gray-500 mt-1 leading-relaxed">
+              Com base no seu uso atual, recomendamos solicitar uma recarga nos
+              próximos 3 dias.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-emerald-50 rounded-3xl p-5 border border-emerald-100">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <p
+                class="text-[9px] font-bold text-emerald-700 uppercase tracking-wider"
+              >
+                Força de Pico
+              </p>
+              <p class="text-[8px] text-emerald-600 uppercase">
+                Valor máx. de fluxo de expiração
+              </p>
+            </div>
+            <button
+              class="text-[10px] font-bold text-emerald-700 flex items-center gap-0.5"
+            >
+              Ver tudo
+              <svg
+                class="w-3 h-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M9 5l7 7-7 7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                />
+              </svg>
+            </button>
+          </div>
+          <div class="flex items-center gap-4 mb-5">
+            <div
+              class="w-12 h-12 rounded-full border-4 border-emerald-400 flex items-center justify-center bg-white flex-shrink-0"
+            >
+              <svg
+                class="w-5 h-5 text-emerald-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <div>
+              <span class="text-3xl font-black text-emerald-900">42.5</span>
+              <p
+                class="text-[9px] font-bold text-gray-400 uppercase tracking-tighter"
+              >
+                Intervalo Ideal
+              </p>
+            </div>
+          </div>
+          <div class="flex items-end justify-between h-10 gap-1">
+            <div
+              class="w-full bg-emerald-200 rounded-sm"
+              style="height: 60%"
+            ></div>
+            <div
+              class="w-full bg-emerald-300 rounded-sm"
+              style="height: 40%"
+            ></div>
+            <div
+              class="w-full bg-emerald-300 rounded-sm"
+              style="height: 55%"
+            ></div>
+            <div
+              class="w-full bg-emerald-400 rounded-sm"
+              style="height: 75%"
+            ></div>
+            <div
+              class="w-full bg-emerald-800 rounded-sm"
+              style="height: 100%"
+            ></div>
+            <div
+              class="w-full bg-emerald-400 rounded-sm"
+              style="height: 70%"
+            ></div>
+            <div
+              class="w-full bg-emerald-200 rounded-sm"
+              style="height: 45%"
+            ></div>
+          </div>
+          <p
+            class="text-[8px] text-center text-emerald-600 mt-2 font-bold uppercase tracking-widest"
+          >
+            Últimas 7 Sessões
+          </p>
+        </div>
+
+        <div
+          class="bg-white rounded-3xl p-5 border border-slate-100"
+          style="box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05)"
+        >
+          <div class="flex items-center gap-3 mb-1">
+            <div class="p-2 bg-blue-50 rounded-xl text-brand-blue">
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <div class="flex items-baseline gap-1">
+              <span class="text-3xl font-black text-gray-900">5.2</span>
+              <span class="text-base font-medium text-gray-400">segundos</span>
+            </div>
+          </div>
+          <p
+            class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-3"
+          >
+            Duração Média
+          </p>
+          <div class="bg-blue-50 border border-blue-100 rounded-xl p-3">
+            <p class="text-xs text-blue-800 leading-relaxed">
+              <strong class="text-blue-900">Boa:</strong> Está a sentir a
+              inalação por mais 1.2s que na semana passada, o que melhora a
+              absorção do medicamento.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="bg-white rounded-3xl p-5 border border-slate-100"
+          style="box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05)"
+        >
+          <h3 class="text-xs font-bold text-gray-800 mb-4">Sessões Recentes</h3>
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-100">
+                <th
+                  class="pb-2 font-bold text-gray-400 uppercase tracking-tighter text-[9px] w-1/3"
+                >
+                  Sessão
+                </th>
+                <th
+                  class="pb-2 font-bold text-gray-400 uppercase tracking-tighter text-[9px] text-center"
+                >
+                  Pressão<br />(Pa)
+                </th>
+                <th
+                  class="pb-2 font-bold text-gray-400 uppercase tracking-tighter text-[9px] text-right"
+                >
+                  Vel. Angular<br />(º/s)
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+              <tr>
+                <td class="py-3 text-gray-700 text-xs">
+                  Hoje,<br /><span class="text-gray-400">08:30</span>
+                </td>
+                <td class="py-3 text-center font-bold text-brand-blue text-xs">
+                  34.7
+                </td>
+                <td class="py-3 text-right text-gray-400 text-xs">12.5</td>
+              </tr>
+              <tr>
+                <td class="py-3 text-gray-700 text-xs">
+                  Ontem,<br /><span class="text-gray-400">22:15</span>
+                </td>
+                <td class="py-3 text-center font-bold text-brand-blue text-xs">
+                  32.8
+                </td>
+                <td class="py-3 text-right text-gray-400 text-xs">11.8</td>
+              </tr>
+              <tr>
+                <td class="py-3 text-gray-700 text-xs">
+                  Ontem,<br /><span class="text-gray-400">09:45</span>
+                </td>
+                <td class="py-3 text-center font-bold text-brand-blue text-xs">
+                  39.1
+                </td>
+                <td class="py-3 text-right text-gray-400 text-xs">13.2</td>
+              </tr>
+              <tr>
+                <td class="py-3 text-gray-700 text-xs">
+                  14 Out,<br /><span class="text-gray-400">18:30</span>
+                </td>
+                <td class="py-3 text-center font-bold text-brand-blue text-xs">
+                  33.5
+                </td>
+                <td class="py-3 text-right text-gray-400 text-xs">12.1</td>
+              </tr>
+              <tr>
+                <td class="py-3 text-gray-700 text-xs">
+                  14 Out,<br /><span class="text-gray-400">08:10</span>
+                </td>
+                <td class="py-3 text-center font-bold text-brand-blue text-xs">
+                  34.7
+                </td>
+                <td class="py-3 text-right text-gray-400 text-xs">12.9</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <nav
+        class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-between px-6 pt-3 pb-8"
+      >
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('dashboard')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Início</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('historico')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Histórico</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 text-brand-blue">
+          <div
+            class="w-6 h-6 flex items-center justify-center bg-soft-blue rounded-lg"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+          </div>
+          <span class="text-[8px] font-bold uppercase">Dados</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('lembretes')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Lembretes</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('perfil')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Perfil</span>
+        </div>
+      </nav>
+    </section>
+
+    <!-- ========== LEMBRETES SCREEN ========== -->
+    <section
+      class="screen w-[375px] h-[812px] bg-[#F8FAFC] rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black"
+      id="screen-lembretes"
+    >
+      <div
+        class="px-6 pt-12 pb-3 flex justify-between items-center bg-white border-b border-gray-50"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-8 h-8 rounded-full bg-brand-blue flex items-center justify-center text-white text-xs font-bold"
+          >
+            JM
+          </div>
+          <span class="text-xs font-bold text-brand-blue">Smart Inhaler</span>
+        </div>
+        <button class="text-gray-400">
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+            <path
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-6 pb-24 pt-4 space-y-5">
+        <div>
+          <p
+            class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2"
+          >
+            Alertas Recentes
+          </p>
+          <div
+            class="bg-yellow-50 border border-yellow-100 rounded-2xl p-4 flex gap-3"
+          >
+            <div class="text-orange-400 mt-0.5 flex-shrink-0">
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-gray-800 font-bold text-sm">
+                Aumento de dosagem detectado
+              </h3>
+              <p class="text-gray-500 text-xs mt-1 leading-relaxed">
+                Usaste o inalador 3 vezes nas últimas 4 horas. Considera
+                descansar.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between items-baseline mb-3">
+            <h2 class="text-gray-800 font-bold text-lg">Lembretes</h2>
+            <button
+              class="text-brand-blue text-[10px] font-bold uppercase tracking-wider"
+              onclick="showScreen('rotina')"
+            >
+              Ver Minha Rotina
+            </button>
+          </div>
+
+          <div
+            class="bg-white rounded-2xl p-5 mb-3 flex items-center justify-between border border-gray-50"
+            style="box-shadow: 0 4px 15px -1px rgba(0, 0, 0, 0.05)"
+          >
+            <div class="flex items-baseline gap-1">
+              <span class="text-3xl font-bold text-gray-800">07:00</span>
+              <span class="text-gray-400 text-xs font-bold">AM</span>
+            </div>
+            <div class="text-right">
+              <h4 class="font-bold text-gray-800 text-sm">Inalador Matinal</h4>
+              <p class="text-gray-400 text-[11px]">Diário · 2 inalações</p>
+            </div>
+            <div
+              class="w-10 h-10 rounded-full bg-soft-blue flex items-center justify-center text-brand-blue ml-3"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div
+            class="bg-white rounded-2xl p-5 flex items-center justify-between border border-gray-50"
+            style="box-shadow: 0 4px 15px -1px rgba(0, 0, 0, 0.05)"
+          >
+            <div class="flex items-baseline gap-1">
+              <span class="text-3xl font-bold text-gray-800">08:30</span>
+              <span class="text-gray-400 text-xs font-bold">PM</span>
+            </div>
+            <div class="text-right">
+              <h4 class="font-bold text-gray-800 text-sm">Inalador Noturno</h4>
+              <p class="text-gray-400 text-[11px]">Diário · 1 inalação</p>
+            </div>
+            <div
+              class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-400 ml-3"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-brand-blue rounded-3xl p-5 text-white">
+          <div class="mb-3">
+            <svg
+              class="w-5 h-5 opacity-80"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+              <path
+                d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold mb-2">Modo Foco ativo</h3>
+          <p class="text-blue-100 text-xs leading-relaxed mb-4">
+            Apenas alertas médicos críticos contornarão o seu horário de
+            silêncio atual.
+          </p>
+          <button
+            class="w-full bg-white text-brand-blue py-3 rounded-2xl font-bold text-sm hover:opacity-90 transition-opacity"
+          >
+            Editar Horário
+          </button>
+        </div>
+
+        <div class="bg-orange-100 rounded-3xl p-5">
+          <h3 class="text-blue-900 text-lg font-bold mb-2">
+            Guia Instrucional
+          </h3>
+          <p class="text-blue-800 text-xs leading-relaxed mb-4">
+            Observe um curto guia com dicas para a sua melhor utilização do
+            inalador.
+          </p>
+          <button
+            onclick="openTutorial()"
+            class="w-full bg-white text-brand-blue py-3 rounded-2xl font-bold text-sm hover:opacity-90 transition-opacity"
+          >
+            Ver
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <nav
+        class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-between px-6 pt-3 pb-8"
+      >
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('dashboard')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Início</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('historico')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Histórico</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('dados')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Dados</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 text-brand-blue">
+          <div
+            class="w-6 h-6 flex items-center justify-center bg-soft-blue rounded-lg"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+          </div>
+          <span class="text-[8px] font-bold uppercase">Lembretes</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('perfil')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Perfil</span>
+        </div>
+      </nav>
+    </section>
+
+    <!-- ========== ROTINA SCREEN ========== -->
+    <section
+      class="screen w-[375px] h-[812px] bg-white rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black"
+      id="screen-rotina"
+    >
+      <div class="px-6 pt-12 pb-3 border-b border-gray-50">
+        <button
+          class="flex items-center gap-2 text-brand-blue font-bold text-sm hover:opacity-70 transition-opacity"
+          onclick="showScreen('lembretes')"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          Plano de Medicação
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-6 pb-10 pt-5 space-y-5">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Minha Rotina</h1>
+          <p class="text-gray-400 text-sm mt-1">
+            Acompanhe o seu plano de prevenção respiratória diário.
+          </p>
+        </div>
+
+        <div
+          class="bg-brand-blue rounded-2xl p-4 flex items-center gap-4 text-white"
+        >
+          <div
+            class="w-12 h-12 rounded-full border-4 border-white/30 flex items-center justify-center font-bold text-sm flex-shrink-0"
+          >
+            3/3
+          </div>
+          <div>
+            <p
+              class="text-[9px] font-bold uppercase tracking-widest opacity-80"
+            >
+              Dose Diária
+            </p>
+            <p class="text-lg font-bold">3 Inalações</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div
+            class="relative pl-4 border-l-2 border-brand-blue bg-white rounded-r-2xl border border-gray-100 p-4"
+            style="box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04)"
+          >
+            <div class="flex justify-between items-start">
+              <div class="flex items-center gap-2">
+                <div class="bg-blue-50 p-2 rounded-xl">
+                  <svg
+                    class="w-4 h-4 text-brand-blue"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    />
+                  </svg>
+                </div>
+                <span class="text-brand-blue font-bold text-xs"
+                  >Uso Diário</span
+                >
+              </div>
+              <div class="text-right">
+                <span class="text-2xl font-bold text-blue-900">07:00</span>
+                <span class="text-xs font-bold text-blue-900 ml-1">AM</span>
+              </div>
+            </div>
+            <div class="mt-2">
+              <h3 class="font-bold text-gray-800 text-sm">Inalação Matinal</h3>
+              <p class="text-xs text-gray-400 mt-1">
+                Realize 2 inalações completas para estabilizar as vias aéreas.
+              </p>
+            </div>
+            <div class="flex gap-2 mt-3">
+              <span
+                class="bg-gray-100 text-gray-500 text-[9px] px-3 py-1 rounded-full font-bold uppercase"
+                >Manutenção</span
+              >
+              <span
+                class="bg-blue-50 text-brand-blue text-[9px] px-3 py-1 rounded-full font-bold uppercase"
+                >2 doses</span
+              >
+            </div>
+          </div>
+
+          <div
+            class="relative pl-4 border-l-2 border-orange-400 bg-white rounded-r-2xl border border-gray-100 p-4"
+            style="box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04)"
+          >
+            <div class="flex justify-between items-start">
+              <div class="flex items-center gap-2">
+                <div class="bg-orange-50 p-2 rounded-xl">
+                  <svg
+                    class="w-4 h-4 text-orange-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    />
+                  </svg>
+                </div>
+                <span class="text-orange-500 font-bold text-xs"
+                  >Uso Diário</span
+                >
+              </div>
+              <div class="text-right">
+                <span class="text-2xl font-bold text-orange-900">08:30</span>
+                <span class="text-xs font-bold text-orange-900 ml-1">PM</span>
+              </div>
+            </div>
+            <div class="mt-2">
+              <h3 class="font-bold text-gray-800 text-sm">Inalação Noturna</h3>
+              <p class="text-xs text-gray-400 mt-1">
+                Realize 1 inalação para garantir proteção durante o sono.
+              </p>
+            </div>
+            <div class="flex gap-2 mt-3">
+              <span
+                class="bg-gray-100 text-gray-500 text-[9px] px-3 py-1 rounded-full font-bold uppercase"
+                >Manutenção</span
+              >
+              <span
+                class="bg-orange-50 text-orange-500 text-[9px] px-3 py-1 rounded-full font-bold uppercase"
+                >1 dose</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-orange-50 rounded-2xl p-5 border border-orange-100">
+          <div class="flex items-center gap-2 mb-3">
+            <svg
+              class="w-4 h-4 text-orange-700"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+            <h3 class="font-bold text-orange-900 text-sm">
+              Por que seguir o plano?
+            </h3>
+          </div>
+          <p class="text-xs text-gray-600 leading-relaxed mb-3">
+            Os inaladores de manutenção são utilizados diariamente para manter
+            as vias respiratórias estáveis. Ao contrário dos inaladores de
+            emergência, constroem uma proteção contínua ao longo do tempo.
+          </p>
+          <p class="text-xs text-gray-600 leading-relaxed mb-4">
+            Manter uma dose constante evita que as vias respiratórias se tornem
+            sensíveis aos gatilhos da asma, reduzindo drasticamente a
+            necessidade do inalador de alívio rápido.
+          </p>
+          <button
+            class="w-full bg-blue-900 text-white py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+          >
+            Saber mais sobre inaladores
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <button
+          class="w-full bg-blue-50 text-brand-blue py-4 rounded-2xl font-bold border border-blue-100 hover:opacity-90 transition-opacity"
+          onclick="showScreen('lembretes')"
+        >
+          Voltar para Lembretes
+        </button>
+        <p class="text-[10px] text-center text-gray-400 px-4 pb-2">
+          Consulte sempre o seu médico antes de realizar qualquer alteração no
+          plano de tratamento.
+        </p>
+      </div>
+    </section>
+
+    <!-- ========== REGISTRY SCREEN ========== -->
+    <section
+      class="screen w-[375px] h-[812px] bg-[#F8FAFC] rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black"
+      id="screen-registry"
+    >
+      <div class="px-6 pt-12">
+        <button
+          class="flex items-center gap-2 text-brand-blue font-bold text-xs hover:opacity-70 transition-opacity"
+          onclick="showScreen('dashboard')"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          Voltar ao Início
+        </button>
+      </div>
+
+      <div class="px-8 py-6 flex flex-col flex-1 overflow-y-auto pb-8">
+        <h1 class="text-4xl font-bold text-gray-900 leading-[1.1]">
+          Registar<br />Inalação
+        </h1>
+        <p class="text-sm text-gray-500 mt-3 mb-7 leading-relaxed">
+          Insira os detalhes do seu tratamento respiratório.
+        </p>
+
+        <div class="space-y-4">
+          <div class="bg-white rounded-3xl p-5 border border-gray-100">
+            <label class="text-xs font-bold text-gray-800 block mb-3"
+              >Data e Hora</label
+            >
+            <div class="grid grid-cols-2 gap-3">
+              <div class="bg-[#f0f7ff] rounded-xl p-3 flex items-center gap-2">
+                <svg
+                  class="w-4 h-4 text-brand-blue flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+                </svg>
+                <input
+                  type="date"
+                  id="reg-date"
+                  class="bg-transparent border-none outline-none text-xs font-medium text-gray-700 w-full"
+                  style="font-family: &quot;DM Mono&quot;, monospace"
+                />
+              </div>
+              <div class="bg-[#f0f7ff] rounded-xl p-3 flex items-center gap-2">
+                <svg
+                  class="w-4 h-4 text-brand-blue flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  />
+                </svg>
+                <input
+                  type="time"
+                  id="reg-time"
+                  class="bg-transparent border-none outline-none text-xs font-medium text-gray-700 w-full"
+                  style="font-family: &quot;DM Mono&quot;, monospace"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-5 border border-gray-100">
+            <label class="text-xs font-bold text-gray-800 block mb-3"
+              >Medicamento</label
+            >
+            <div class="field-wrap">
+              <input type="text" id="reg-med" placeholder=" " list="med-list" />
+              <label for="reg-med">Ex: Ventolin, Symbicort...</label>
+              <datalist id="med-list">
+                <option value="Ventolin Evohaler" />
+                <option value="Symbicort Turbuhaler" />
+                <option value="Seretide Accuhaler" />
+                <option value="Spiriva Respimat" />
+                <option value="Flixotide Diskus" />
+              </datalist>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-5 border border-gray-100">
+            <label class="text-xs font-bold text-gray-800 block mb-3"
+              >Tipo de Dose</label
+            >
+            <div class="bg-[#f0f7ff] rounded-2xl p-1 flex gap-1">
+              <button
+                class="dose-btn active"
+                id="dose-manutencao"
+                onclick="selectDose('manutencao')"
+              >
+                Manutenção
+              </button>
+              <button
+                class="dose-btn"
+                id="dose-emergencia"
+                onclick="selectDose('emergencia')"
+              >
+                Emergência
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-5 border border-gray-100">
+            <label class="text-xs font-bold text-gray-800 block mb-3"
+              >Notas
+              <span class="text-gray-300 font-normal">(opcional)</span></label
+            >
+            <textarea
+              id="reg-notes"
+              placeholder="Ex: tomado após exercício, sintomas ligeiros..."
+              class="w-full bg-[#f8fafc] border-none outline-none rounded-xl p-3 text-sm text-gray-700 resize-none"
+              rows="3"
+              style="font-family: &quot;DM Sans&quot;, sans-serif"
+            ></textarea>
+          </div>
+
+          <div class="bg-white rounded-3xl p-5 border border-gray-100">
+            <label class="text-xs font-bold text-gray-800 block mb-3"
+              >Localização</label
+            >
+            <div class="field-wrap">
+              <input type="text" id="reg-location" placeholder=" " />
+              <label for="reg-location">Adicionar local atual...</label>
+            </div>
+          </div>
+
+          <button
+            class="w-full bg-brand-blue text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-100 hover:opacity-90 transition-opacity"
+            onclick="confirmRegistry()"
+          >
+            Confirmar Registo
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PERFIL SCREEN ========== -->
+    <section
+      class="screen w-[375px] h-[812px] bg-slate-50 rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black"
+      id="screen-perfil"
+    >
+      <!-- BEGIN: MainHeader -->
+      <header
+        class="flex items-center justify-between px-6 py-4 bg-white sticky top-0 z-10 border-b border-slate-100"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-full overflow-hidden border border-slate-200"
+          >
+            <img
+              alt="Avatar Thumbnail"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIhY06QfpuYYJHRBiAz7yHI16Ty4eayG_Xrz3mqcGk_vC88DnpADIcKjipE2ivRFJNUEcYnv322FqAqa5LZ66-D4w0bQanyoE_6qKLqtOHPTcKy-HnOPYzG2yvZz61Vg9FTpHU1l-AA9w5tn1IOU3ccpU04BbpIItCViQF0fAjzCWAYQ9JiyK77CF6yB4Q5zLWtQvlBwv-t9l9JYr250xVYC1NiXwlmnppR7_-cM_dGUv5lL_LC1JblohYXmfE7JWR4EMRJctzDss"
+            />
+          </div>
+          <span class="text-brand-blue font-bold text-lg">Smart Inhaler</span>
+        </div>
+        <button
+          aria-label="Configurações"
+          class="p-2 text-slate-500"
+          onclick="showScreen('definicoes')"
+        >
+          <svg
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+            ></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
+      </header>
+
+      <div class="flex-1 overflow-y-auto px-6 py-4 space-y-8 pb-24">
+        <section class="flex flex-col items-center text-center mt-4">
+          <div class="relative">
+            <div
+              class="w-32 h-32 rounded-full border-4 border-slate-200 overflow-hidden bg-slate-800"
+            >
+              <img
+                alt="João Silva"
+                class="w-full h-full object-cover opacity-80"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuxl3c3_QgGqcJgmlbm8r89rr0irTq1KXhBYHHmPjmlVDivC9Hp-srVdWpPiEcNZ3yBo_ER60rdcvwsfv0lnveIGZ9zVxLblOu7TckCFsQ4eXojFglnKtydaDVo2oCkk5y_K7zn3d8nPfOcLznjBf4PXIqFGMXNrqA-oxiRAOwcgD3QTD9OT82E53Ok7IK_0D3l9NNFhBnfV6CKR350yCDI6uEFj0brSG__n4QbXnKhkAOM_2r4dPG6TdpP9TAFvqomM9W1Ogfmck"
+              />
+            </div>
+            <button
+              aria-label="Editar foto"
+              class="absolute bottom-1 right-1 bg-brand-blue text-white p-2 rounded-full border-2 border-white shadow-lg"
+            >
+              <svg
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+                ></path>
+                <path d="m15 5 4 4"></path>
+              </svg>
+            </button>
+          </div>
+          <h1 class="mt-4 text-2xl font-bold text-slate-800">João Silva</h1>
+          <p class="text-slate-500 text-sm font-medium">
+            ID do Paciente: CS-88203-ER
+          </p>
+        </section>
+
+        <section class="grid grid-cols-2 gap-4">
+          <div
+            class="bg-white p-4 rounded-2xl card-shadow border border-slate-100 flex flex-col items-start"
+          >
+            <div class="bg-emerald-50 p-2 rounded-lg mb-2">
+              <svg
+                class="text-emerald-600"
+                fill="none"
+                height="20"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+                <line x1="16" x2="16" y1="2" y2="6"></line>
+                <line x1="8" x2="8" y1="2" y2="6"></line>
+                <line x1="3" x2="21" y1="10" y2="10"></line>
+              </svg>
+            </div>
+            <span
+              class="text-[10px] uppercase tracking-wider text-slate-400 font-bold"
+              >Idade</span
+            >
+            <span class="text-lg font-bold text-slate-700">29 Anos</span>
+          </div>
+          <div
+            class="bg-white p-4 rounded-2xl card-shadow border border-slate-100 flex flex-col items-start"
+          >
+            <div class="bg-orange-50 p-2 rounded-lg mb-2">
+              <svg
+                class="text-orange-600"
+                fill="none"
+                height="20"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="m7.5 10.5 6.5-6.5L20 10.5Z"></path>
+                <path d="m7.5 10.5-6.5 6.5L7.5 23.5Z"></path>
+                <path d="m14 4 6.5 6.5-6.5 6.5Z"></path>
+                <path d="m7.5 10.5 6.5 6.5-6.5 6.5Z"></path>
+              </svg>
+            </div>
+            <span
+              class="text-[10px] uppercase tracking-wider text-slate-400 font-bold"
+              >Condição</span
+            >
+            <span class="text-lg font-bold text-slate-700">Asma</span>
+          </div>
+        </section>
+
+        <section class="bg-indigo-50 p-6 rounded-3xl border border-indigo-100">
+          <h3
+            class="text-[10px] uppercase tracking-widest text-indigo-400 font-bold mb-1"
+          >
+            Contacto de Emergência
+          </h3>
+          <div class="flex flex-col gap-1">
+            <span class="text-xl font-bold text-slate-800"
+              >Margarida Silva</span
+            >
+            <div class="flex items-center gap-2 text-slate-600 text-sm">
+              <svg
+                fill="currentColor"
+                height="14"
+                viewBox="0 0 24 24"
+                width="14"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
+                ></path>
+              </svg>
+              <span>+351 912345678</span>
+            </div>
+          </div>
+          <button
+            class="mt-4 w-full bg-brand-blue text-white py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-md active:scale-95 transition-transform"
+          >
+            <svg
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+            </svg>
+            Notificar
+          </button>
+        </section>
+
+        <section class="space-y-4">
+          <h3
+            class="text-[10px] uppercase tracking-widest text-slate-400 font-bold px-1"
+          >
+            Equipa de Saúde
+          </h3>
+          <div
+            class="bg-white p-4 rounded-2xl card-shadow border border-slate-100 flex flex-col gap-4"
+          >
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-xl bg-slate-100 overflow-hidden">
+                <img
+                  alt="Dra. Sara Martins"
+                  class="w-full h-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj8ttewl1hs1Wj-6wz_BaAq7Lp52E4pnLKoi146r8N46sIuDARBZgcLP0T4VI66XxxJknaFGLD-KV7T3PfM5IZ8NWtu-wf_f0En5KXko3sFexpoPKus4ThDy2ywgk-Heuw5aL6zmONsTCuIICIywaApNCtOY0hV2_tXYhde9G2WCoC7k_CSlgSfJ22Habu0eieLmqZXzgsF7Vc354j8sdEnyRVb06CumY6IXQv81o-lKUAKT90usIBeqi4DwsJg3ezl4FvT8UlTT4"
+                />
+              </div>
+              <div class="flex-1">
+                <h4 class="font-bold text-slate-800">Dra. Sara Martins</h4>
+                <p class="text-xs text-slate-500">Médico de Família</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="py-4 space-y-4">
+          <button
+            class="w-full bg-brand-blue text-white font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-3 active:scale-95 transition-transform"
+            onclick="showScreen('editar-perfil')"
+          >
+            <svg
+              fill="none"
+              height="20"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+              <path d="m16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            Editar Informações Pessoais
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <nav
+        class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-between px-6 pt-3 pb-8"
+      >
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('dashboard')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Início</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('historico')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Histórico</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('dados')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Dados</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('lembretes')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Lembretes</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 text-brand-blue">
+          <div
+            class="w-6 h-6 flex items-center justify-center bg-soft-blue rounded-lg"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+          </div>
+          <span class="text-[8px] font-bold uppercase">Perfil</span>
+        </div>
+      </nav>
+    </section>
+
+    <!-- ========== EDITAR PERFIL SCREEN ========== -->
+    <section
+      class="screen w-[375px] h-[812px] bg-[#F8FAFC] rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black"
+      id="screen-editar-perfil"
+    >
+      <header
+        class="flex items-center p-4 sticky top-0 bg-[#F8FAFC] z-10 border-b border-gray-100"
+      >
+        <button
+          aria-label="Back"
+          class="p-2 text-brand-blue"
+          onclick="showScreen('perfil')"
+        >
+          <svg
+            class="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+        </button>
+        <h1 class="text-lg font-bold text-brand-blue ml-4">Editar Perfil</h1>
+      </header>
+
+      <div class="flex-1 overflow-y-auto px-5 pb-24">
+        <section class="flex flex-col items-center my-6">
+          <div class="relative">
+            <div
+              class="w-28 h-28 bg-[#1E293B] rounded-full flex items-center justify-center overflow-hidden border-4 border-white shadow-lg"
+            >
+              <img
+                alt="Profile Picture"
+                class="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEJrDB1OxTWuP_x0FHy2CXs4qbsLZGD1Z72iyOtvOFg2_I3vx5YCeOrxQ-8pu1QxNF51wZsBAlhnvqta1XbP_EUWIDelRxcpdyN7SYDs9zf4cIdtca5axxaqPUGtp1RQkcCk2OGtU7L644ygEr7t91G6fRhBWYi6qC-oDkIqpnCw3xZWfUhveMxCbIrUOMYmO9NZMQAle1lx_ridAvGb4xl8UOydnP8_B-Doq-trFkDYgnSnB3Et1xD5ReHiCM_nn0PiQnpAZI26s"
+              />
+            </div>
+            <button
+              aria-label="Edit photo"
+              class="absolute bottom-0 right-0 bg-brand-blue p-2 rounded-full border-2 border-white text-white shadow-md"
+            >
+              <svg
+                class="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                ></path>
+              </svg>
+            </button>
+          </div>
+          <p class="text-gray-500 text-xs mt-3">Toque na câmara para alterar</p>
+        </section>
+
+        <section class="section-container-white">
+          <h2 class="text-brand-blue font-bold mb-4 text-sm">
+            Informações Básicas
+          </h2>
+          <div class="space-y-4">
+            <div>
+              <label
+                class="block text-gray-500 text-[10px] mb-1 ml-1 uppercase font-semibold"
+                >Nome completo</label
+              >
+              <input
+                class="custom-input focus:ring-2 focus:ring-blue-100"
+                type="text"
+                value="João Silva"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-gray-500 text-[10px] mb-1 ml-1 uppercase font-semibold"
+                >ID de Paciente</label
+              >
+              <div class="relative">
+                <input
+                  class="custom-input custom-input-readonly pr-10"
+                  readonly=""
+                  type="text"
+                  value="+CS-911203-ER"
+                />
+                <div
+                  class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
+                >
+                  <svg
+                    class="h-4 w-4 text-gray-400"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      clip-rule="evenodd"
+                      d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                      fill-rule="evenodd"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mt-6">
+            <div>
+              <label
+                class="block text-gray-500 text-[10px] mb-1 ml-1 uppercase font-semibold"
+                >Idade</label
+              >
+              <input class="custom-input bg-[#F8FAFC]" type="text" value="29" />
+            </div>
+            <div>
+              <label
+                class="block text-gray-500 text-[10px] mb-1 ml-1 uppercase font-semibold"
+                >Sangue</label
+              >
+              <div class="relative">
+                <select class="custom-input bg-[#F8FAFC] appearance-none">
+                  <option selected="">A+</option>
+                  <option>O-</option>
+                  <option>B+</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label
+                class="block text-gray-500 text-[10px] mb-1 ml-1 uppercase font-semibold"
+                >Altura (cm)</label
+              >
+              <input
+                class="custom-input bg-[#F8FAFC]"
+                type="text"
+                value="168"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-gray-500 text-[10px] mb-1 ml-1 uppercase font-semibold"
+                >Peso (kg)</label
+              >
+              <input class="custom-input bg-[#F8FAFC]" type="text" value="64" />
+            </div>
+          </div>
+        </section>
+
+        <section class="section-container bg-[#F1F5F9]">
+          <div class="flex items-center mb-4">
+            <span class="bg-teal-100 p-1 rounded-md mr-2">
+              <svg
+                class="h-4 w-4 text-teal-700"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4 6h16M4 12h16m-7 6h7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                ></path>
+              </svg>
+            </span>
+            <h2 class="text-brand-blue font-bold text-sm">
+              Condição Respiratória
+            </h2>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span
+              class="bg-teal-700 text-white px-4 py-2 rounded-full text-xs font-medium shadow-sm"
+              >Asma</span
+            >
+            <span
+              class="bg-gray-200 text-gray-600 px-4 py-2 rounded-full text-xs font-medium"
+              >DPOC</span
+            >
+            <span
+              class="bg-gray-200 text-gray-600 px-4 py-2 rounded-full text-xs font-medium"
+              >Alergias</span
+            >
+            <button
+              aria-label="Add condition"
+              class="bg-blue-100 text-brand-blue w-8 h-8 rounded-full flex items-center justify-center font-bold"
+            >
+              +
+            </button>
+          </div>
+        </section>
+
+        <section class="section-container border-emergency bg-[#F8F9FA]">
+          <div class="flex items-center mb-4">
+            <span class="text-orange-700 mr-2">
+              <svg
+                class="h-5 w-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12.395 2.553a1 1 0 00-1.450 1.259l.741 2.223A4.5 4.5 0 0013 14.28V15h2a2 2 0 002-2v-3.95a4.5 4.5 0 00-4.605-4.497z"
+                  fill-rule="evenodd"
+                ></path>
+                <path d="M7 10a3 3 0 100-6 3 3 0 000 6z"></path>
+              </svg>
+            </span>
+            <h2 class="text-orange-800 font-bold text-sm">
+              Contacto de Emergência
+            </h2>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <label
+                class="block text-gray-400 text-[10px] mb-1 ml-1 uppercase font-semibold"
+                >Nome de Contacto</label
+              >
+              <input
+                class="custom-input border-gray-100 border"
+                type="text"
+                value="Margarida Silva"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-gray-400 text-[10px] mb-1 ml-1 uppercase font-semibold"
+                >Telemóvel</label
+              >
+              <input
+                class="custom-input border-gray-100 border"
+                type="text"
+                value="+351 912 345 678"
+              />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div
+        class="absolute bottom-0 w-full p-5 bg-gradient-to-t from-[#F8FAFC] via-[#F8FAFC] to-transparent"
+      >
+        <button
+          class="w-full bg-brand-blue text-white py-4 rounded-2xl font-bold flex items-center justify-center shadow-xl shadow-blue-200 active:scale-[0.98] transition-transform"
+          onclick="showScreen('perfil')"
+        >
+          <svg
+            class="h-5 w-5 mr-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+          Guardar Alterações
+        </button>
+      </div>
+    </section>
+
+    <!-- ========== DEFINICOES SCREEN ========== -->
+    <section
+      class="screen w-[375px] h-[812px] bg-white rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black"
+      id="screen-definicoes"
+    >
+      <header
+        class="flex items-center justify-between px-6 py-6"
+        data-purpose="app-navigation"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white"
+          >
+            <i class="w-5 h-5" data-lucide="user"></i>
+          </div>
+          <span class="font-bold text-blue-600 text-lg">Smart Inhaler</span>
+        </div>
+        <button class="text-blue-600">
+          <i class="w-6 h-6" data-lucide="settings"></i>
+        </button>
+      </header>
+
+      <div class="flex-1 overflow-y-auto px-0 pb-24">
+        <section class="px-6 mb-6">
+          <h1 class="text-3xl font-extrabold text-slate-800 mb-2">
+            Definições
+          </h1>
+          <p class="text-slate-500 text-sm leading-snug">
+            Personalize a sua experiência de cuidados e a conectividade do
+            dispositivo.
+          </p>
+        </section>
+
+        <section class="px-6 mb-6" data-purpose="device-management">
+          <div
+            class="bg-blue-50/30 rounded-3xl p-6 border border-blue-50/50 device-card-shadow"
+          >
+            <div class="flex justify-between items-center mb-6">
+              <div
+                class="bg-cyan-300 text-[10px] font-black px-3 py-1.5 rounded-full flex items-center gap-1.5 tracking-wider"
+              >
+                <span
+                  class="w-2 h-2 bg-cyan-600 rounded-full animate-pulse"
+                ></span>
+                LIGAÇÃO EM DIRETO
+              </div>
+              <div class="text-slate-700">
+                <i class="w-5 h-5" data-lucide="bluetooth"></i>
+              </div>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800 leading-tight mb-2">
+              Inalador<br />Inteligente Pro
+            </h2>
+            <p class="text-slate-500 text-sm mb-8 leading-relaxed">
+              Última sincronização hoje às 08:45.<br />Nível da bateria a 84%.
+            </p>
+            <div class="flex gap-3">
+              <button
+                class="flex-1 bg-blue-700 text-white font-bold py-4 px-2 rounded-3xl text-sm transition active:scale-95"
+              >
+                Reconectar Dispositivo
+              </button>
+              <button
+                class="flex-1 bg-slate-200 text-blue-800 font-bold py-4 px-2 rounded-3xl text-sm transition active:scale-95"
+              >
+                Detalhes
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="px-6 space-y-4" data-purpose="navigation-options">
+          <div
+            class="bg-slate-50/80 rounded-2xl p-5 border border-slate-100 cursor-pointer active:bg-slate-100 transition"
+          >
+            <div class="text-blue-600 mb-3">
+              <i class="w-6 h-6" data-lucide="volume-2"></i>
+            </div>
+            <h3 class="font-bold text-slate-800 mb-1">Som e Háptica</h3>
+            <p class="text-xs text-slate-500 leading-normal">
+              Personalize os tons de alarme e padrões de vibração para
+              diferentes medicamentos.
+            </p>
+          </div>
+          <div
+            class="bg-slate-50/80 rounded-2xl p-5 border border-slate-100 cursor-pointer active:bg-slate-100 transition"
+          >
+            <div class="text-teal-600 mb-3">
+              <i class="w-6 h-6" data-lucide="share-2"></i>
+            </div>
+            <h3 class="font-bold text-slate-800 mb-1">Círculo de Cuidados</h3>
+            <p class="text-xs text-slate-500 leading-normal">
+              Partilhe os seus dados de adesão com o seu médico de família ou
+              familiares.
+            </p>
+          </div>
+          <div
+            class="bg-slate-50/80 rounded-2xl p-5 border border-slate-100 cursor-pointer active:bg-slate-100 transition"
+          >
+            <div class="text-orange-700 mb-3">
+              <i class="w-6 h-6" data-lucide="shield-check"></i>
+            </div>
+            <h3 class="font-bold text-slate-800 mb-1">Privacidade e Dados</h3>
+            <p class="text-xs text-slate-500 leading-normal">
+              Gira como os seus dados biométricos são armazenados e encriptados
+              neste dispositivo.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <nav
+        class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-between px-6 pt-3 pb-8"
+      >
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('dashboard')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Início</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('historico')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Histórico</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('dados')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Dados</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-gray-300 cursor-pointer hover:text-brand-blue transition-colors"
+          onclick="showScreen('lembretes')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Lembretes</span>
+        </div>
+        <div
+          class="flex flex-col items-center gap-1 text-brand-blue cursor-pointer"
+          onclick="showScreen('perfil')"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="text-[8px] font-bold uppercase">Perfil</span>
+        </div>
+      </nav>
+    </section>
+
+    <!-- ========== TUTORIAL SCREEN ========== -->
+    <section
+      class="screen w-[375px] h-[812px] bg-white rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black hidden"
+      id="screen-tutorial"
+    >
+      <header class="p-6 pb-2">
+        <div class="flex items-center justify-between mb-4">
+          <!-- Back Arrow Icon -->
+          <button aria-label="Voltar" class="p-2 -ml-2" onclick="closeTutorial()">
+            <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+            </svg>
+          </button>
+          <!-- Header Text -->
+          <div class="text-center flex-1">
+            <p class="text-[10px] font-bold tracking-widest text-gray-400 uppercase">Guia Instrucional</p>
+            <p class="text-sm font-extrabold text-gray-800" id="tutorial-step-text">Passo 1 de 5</p>
+          </div>
+          <!-- Spacer for alignment -->
+          <div class="w-10"></div>
+        </div>
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+          <div class="bg-blue-600 h-full transition-all duration-300" id="tutorial-progress-bar" style="width: 20%;"></div>
+        </div>
+      </header>
+
+      <main class="flex-grow px-8 pt-4 flex flex-col overflow-y-auto">
+        <!-- Illustration Area -->
+        <div class="bg-blue-100 rounded-3xl w-full aspect-square relative flex items-center justify-center overflow-hidden mb-8">
+          <img id="tutorial-img" src="" alt="Ilustração do passo" class="w-full h-full object-cover">
+        </div>
+        <!-- Text Content -->
+        <div class="space-y-4">
+          <h1 id="tutorial-title" class="text-2xl font-bold text-gray-800 leading-tight">
+            Abanar o Inalador
+          </h1>
+          <p id="tutorial-desc" class="text-gray-500 leading-relaxed text-sm">
+            Retire a tampa e abane o inalador intensamente durante 5 segundos para misturar a medicação.
+          </p>
+        </div>
+        
+        <!-- Info Card (Step 5) -->
+        <div id="tutorial-info-card" class="hidden mt-4 p-5 bg-blue-50 rounded-xl border border-blue-100 flex gap-4 items-start">
+          <i class="w-5 h-5 text-blue-600 mt-0.5" data-lucide="info"></i>
+          <div>
+            <p class="font-bold text-gray-800 text-sm mb-1">
+              Dica de Segurança
+            </p>
+            <p class="text-xs text-gray-500 leading-relaxed">
+              Aguardar garante que o medicamento seja absorvido corretamente
+              antes da próxima inalação.
+            </p>
+          </div>
+        </div>
+      </main>
+
+      <footer class="p-8 space-y-3 pb-10">
+        <!-- Step Navigation Buttons -->
+        <div class="flex gap-3">
+          <button id="tutorial-prev-btn" onclick="prevTutorialStep()" class="flex-1 bg-gray-100 text-gray-500 font-bold py-4 rounded-xl hover:bg-gray-200 transition-colors">
+            Anterior
+          </button>
+          <button id="tutorial-next-btn" onclick="nextTutorialStep()" class="flex-1 bg-slate-900 text-white flex justify-center items-center gap-2 font-bold py-4 rounded-xl hover:opacity-90 transition-colors">
+            Próximo
+          </button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- SUCCESS TOAST -->
+    <div
+      id="toast"
+      style="
+        position: fixed;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: #1a9c8e;
+        color: #fff;
+        padding: 12px 24px;
+        border-radius: 99px;
+        font-size: 13px;
+        font-weight: 700;
+        opacity: 0;
+        transition: all 0.35s;
+        pointer-events: none;
+        white-space: nowrap;
+        z-index: 999;
+      "
+    >
+      ✓ Inalação registada com sucesso!
+    </div>
+
+    <script>
+      // FIX: lembretes added at index 4, registry moved to 5, perfil added, definicoes added
+      const SCREENS = {
+        login: 0,
+        dashboard: 1,
+        historico: 2,
+        dados: 3,
+        lembretes: 4,
+        registry: 5,
+        perfil: 6,
+        definicoes: 7,
+        tutorial: 8,
+        "editar-perfil": -1,
+      };
+
+      // Inicializar ícones lucide
+      lucide.createIcons();
+
+      // --- LOGIC FOR TUTORIAL ---
+      const tutorialSteps = [
+        {
+          title: "Abanar o Inalador",
+          text: "Retire a tampa e abane o inalador intensamente durante 5 segundos para misturar a medicação.",
+          img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDXdWA4jEWi5qN8g-MclRRqpcNGddWW_XkNHSh8XdpGs7Wl8ZTFGet0YYnvM6w9qV3a6ozO9aRs53YTjE4wF5D9FeVxf0iKi2dvpXjdx56VX-wexSGlZtpgsZmZ-sRk4l4-FnsUsoM2cjmw4aoQeKlzLV1SBdlvtcn_Bo33Szp1k_YdXwsGEihItUJoMbp8VmpGP0M7SSjgbCdOYoDQV8pp1qZTqTlsaqNzOmo0ynVplEkMqR1vrTKKjm4oOKhBSlIVSVn0HTcAJns",
+          progress: 20
+        },
+        {
+          title: "Expire completamente",
+          text: "Antes de usar o inalador, solte o ar dos pulmões lentamente. Isto ajuda a preparar a inspiração correta da medicação.",
+          img: "https://lh3.googleusercontent.com/aida/ADBb0uhs0-LlFa3dcnlXZKySNa5-biHp_zH5txiWRejCKzT7aQcgmxB5tLMX33f06-hLg8McR3vDcwyc8wqs015-JqZkm5ILFFNfBex42OxKrM_vsQifYrbHaYpYQelqjC9UehF9arcrvVKpfKDpnIxe0BDlKlUfB2LV9IYR29swrEYsSqleldiv4piI22GS8vxRh9zClVH9BjHEme8hAn8-XMrShBdezzRmM4qHO3riapzaqTqbmSjdEGaeuPjOz5mMhZ2LC9ZZnxjA",
+          progress: 40
+        },
+        {
+          title: "Inspirar e Pressionar",
+          text: "Coloque o inalador na boca e comece a inspirar.",
+          img: "https://lh3.googleusercontent.com/aida/ADBb0uhPILQVaTmj5_ypzhKFoQJ3utMam7RmW4SfX9ctjwfPh-t5oEh2lMoE3ehDyNzbdBgpPJN-ExQfaIDsbCk_fHOUAweFopY7PFDirL-QXpNqYL5r3Ig_F_fqFcaD1rJZu3MI14m7qKB5KpVEdw_i5vqyjnffyydWlJIIcP3bUcl62O_hukBPdWtIoE7D3k-db4rZ3GlvEyBkFx3Bg4ixemFD3d51ASJzfATbpzD9dQgSjsa9ewJT-32YmLSn2_CziYmxB4D0FDsXDA",
+          progress: 60
+        },
+        {
+          title: "Suster a respiração",
+          text: "Retire o inalador da boca e sustenha a respiração por 10 segundos para garantir que a medicação chega aos pulmões.",
+          img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBOFm4INSXG4jubXvNtk3LTg8Ril2BADmZ-QOMojga0osFdozP0ozq63WjxVCOUxFne42ElXall9XHYlO34i4OLGxSnZCvUmfFbPq0Qfo_nWk5WKo2k3N9otu1V-wLg-PI8bh81K7msh16_cJwiIkc4WlH6qBcM0SzY6_U6x9G-AunbL2KdQSGdMIFXs9FgBiZr-GI8g9JdqZ4MdN-Cj0exF2PwTK94wlYNP-qjwa-HM45cImHE8voex9nsrNvP8hgjFgDZW4RPyVg",
+          progress: 80
+        },
+        {
+          title: "Expire lentamente",
+          text: "Solte o ar dos pulmões após sustentar a respiração.",
+          img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDxdIdQ-28VMZuoeRKNJzRhqDt0jB03k0TMCCPMuuuqDp28_p4jeaN-UPFV3MZniEdXt5b7OU4g10YcGPcjYA68W9QVTLRmwwCNxdkhYgDUxcUSRPuFSnTbIOqBkvc68RAvIUTFOQtq8HDUkuwg_BWX-KabQcbhqMGkU_GJMrVXCnEBNQoCF4XooU8l2f12LmPTdyG6KbhCIgj2wv3FoOACM6r_RczgT8wwxAUNfMwTYAXny825tVL_Bf-577jZ5BU0J7uKzBlpG-Y",
+          progress: 100
+        }
+      ];
+
+      let currentTutorialStep = 0;
+
+      function openTutorial() {
+        currentTutorialStep = 0;
+        updateTutorialView();
+        showScreen('tutorial');
+      }
+
+      function closeTutorial() {
+        showScreen('lembretes');
+      }
+
+      function nextTutorialStep() {
+        if (currentTutorialStep < tutorialSteps.length - 1) {
+          currentTutorialStep++;
+          updateTutorialView();
+        } else {
+          closeTutorial();
+        }
+      }
+
+      function prevTutorialStep() {
+        if (currentTutorialStep > 0) {
+          currentTutorialStep--;
+          updateTutorialView();
+        }
+      }
+
+      function updateTutorialView() {
+        const step = tutorialSteps[currentTutorialStep];
+        document.getElementById('tutorial-img').src = step.img;
+        document.getElementById('tutorial-title').textContent = step.title;
+        document.getElementById('tutorial-desc').textContent = step.text;
+        document.getElementById('tutorial-progress-bar').style.width = step.progress + '%';
+        document.getElementById('tutorial-step-text').textContent = `Passo ${currentTutorialStep + 1} de 5`;
+        
+        const prevBtn = document.getElementById('tutorial-prev-btn');
+        const nextBtn = document.getElementById('tutorial-next-btn');
+        
+        if (currentTutorialStep === 0) {
+          prevBtn.classList.add('opacity-50', 'pointer-events-none');
+        } else {
+          prevBtn.classList.remove('opacity-50', 'pointer-events-none');
+        }
+
+        if (currentTutorialStep === tutorialSteps.length - 1) {
+          nextBtn.innerHTML = `Concluir <i class="w-5 h-5" data-lucide="check-circle"></i>`;
+        } else {
+          nextBtn.textContent = 'Próximo';
+        }
+        
+        const infoCard = document.getElementById('tutorial-info-card');
+        if (currentTutorialStep === tutorialSteps.length - 1) {
+          infoCard.classList.remove('hidden');
+        } else {
+          infoCard.classList.add('hidden');
+        }
+        
+        lucide.createIcons();
+      }
+
+      const chartData = {
+        dia: [
+          { label: "8h", h: 50, type: "m" },
+          { label: "12h", h: 30, type: "m" },
+          { label: "16h", h: 0, type: "m" },
+          { label: "20h", h: 70, type: "e" },
+          { label: "22h", h: 40, type: "m" },
+          { label: "24h", h: 0, type: "m" },
+        ],
+        semana: [
+          { label: "S", h: 65, type: "m" },
+          { label: "T", h: 40, type: "m" },
+          { label: "Q", h: 75, type: "m" },
+          { label: "Q", h: 55, type: "m" },
+          { label: "S", h: 85, type: "e" },
+          { label: "S", h: 30, type: "m" },
+          { label: "D", h: 60, type: "m" },
+        ],
+        mes: [
+          { label: "1", h: 40, type: "m" },
+          { label: "2", h: 60, type: "m" },
+          { label: "3", h: 80, type: "e" },
+          { label: "4", h: 50, type: "m" },
+          { label: "5", h: 70, type: "m" },
+          { label: "6", h: 35, type: "m" },
+          { label: "7", h: 90, type: "m" },
+          { label: "8", h: 55, type: "e" },
+          { label: "9", h: 45, type: "m" },
+          { label: "10", h: 65, type: "m" },
+        ],
+      };
+
+      function renderChart(tf) {
+        const data = chartData[tf];
+        const container = document.getElementById("hist-chart");
+        container.innerHTML = data
+          .map(
+            (d) => `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div class="chart-bar-bg">
+          <div class="chart-bar-fill${d.type === "e" ? " emergency" : ""}" style="height:${d.h}%"></div>
+        </div>
+        <span style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;">${d.label}</span>
+      </div>
+    `,
+          )
+          .join("");
+      }
+
+      function setTimeframe(tf, btn) {
+        document
+          .querySelectorAll(".time-tab")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderChart(tf);
+      }
+
+      function showScreen(name) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById("screen-" + name).classList.add("active");
+        const tabIndex = SCREENS[name];
+        if (tabIndex !== undefined) {
+          document
+            .querySelectorAll(".tab-btn")
+            [tabIndex].classList.add("active");
+        }
+        if (name === "registry") {
+          const now = new Date();
+          document.getElementById("reg-date").value = now
+            .toISOString()
+            .split("T")[0];
+          document.getElementById("reg-time").value = now
+            .toTimeString()
+            .slice(0, 5);
+        }
+        if (name === "historico") {
+          renderChart("semana");
+        }
+      }
+
+      function togglePw(id, el) {
+        const input = document.getElementById(id);
+        input.type = input.type === "password" ? "text" : "password";
+        el.style.color = input.type === "text" ? "#2563eb" : "#9ca3af";
+      }
+
+      function selectDose(type) {
+        document
+          .getElementById("dose-manutencao")
+          .classList.toggle("active", type === "manutencao");
+        document
+          .getElementById("dose-emergencia")
+          .classList.toggle("active", type === "emergencia");
+      }
+
+      function confirmRegistry() {
+        const toast = document.getElementById("toast");
+        toast.style.opacity = "1";
+        toast.style.transform = "translateX(-50%) translateY(0)";
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          toast.style.transform = "translateX(-50%) translateY(20px)";
+          setTimeout(() => showScreen("dashboard"), 350);
+        }, 2200);
+      }
+    </script>
+  </body>
+</html>
