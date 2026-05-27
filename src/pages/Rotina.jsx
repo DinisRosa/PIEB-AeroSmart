@@ -4,7 +4,7 @@ export default function Rotina() {
   const navigate = useNavigate();
 
   return (
-    <section className="screen active w-[375px] h-[812px] bg-white rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black">
+    <section className="w-full h-full bg-white overflow-hidden flex flex-col relative">
       <div className="px-6 pt-12 pb-3 border-b border-gray-50">
         <button
           className="flex items-center gap-2 text-brand-blue font-bold text-sm hover:opacity-70 transition-opacity"

@@ -45,24 +45,26 @@ function GlobalToast() {
 function App() {
   return (
     <AppProvider>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 font-sans">
-        <Router>
-          <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/historico" element={<Historico />} />
-            <Route path="/dados" element={<Dados />} />
-            <Route path="/lembretes" element={<Lembretes />} />
-            <Route path="/rotina" element={<Rotina />} />
-            <Route path="/registry" element={<Registry />} />
-            <Route path="/perfil" element={<Perfil />} />
-            <Route path="/editar-perfil" element={<EditarPerfil />} />
-            <Route path="/definicoes" element={<Definicoes />} />
-            <Route path="/tutorial" element={<Tutorial />} />
-          </Routes>
-          <GlobalToast />
-        </Router>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 font-sans">
+        <div className="w-full max-w-md h-[100dvh] mx-auto bg-white shadow-2xl sm:rounded-2xl sm:h-[95dvh] sm:border sm:border-gray-300 relative overflow-hidden flex flex-col">
+          <Router>
+            <Routes>
+              <Route path="/" element={<Navigate to="/login" replace />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/historico" element={<Historico />} />
+              <Route path="/dados" element={<Dados />} />
+              <Route path="/lembretes" element={<Lembretes />} />
+              <Route path="/rotina" element={<Rotina />} />
+              <Route path="/registry" element={<Registry />} />
+              <Route path="/perfil" element={<Perfil />} />
+              <Route path="/editar-perfil" element={<EditarPerfil />} />
+              <Route path="/definicoes" element={<Definicoes />} />
+              <Route path="/tutorial" element={<Tutorial />} />
+            </Routes>
+            <GlobalToast />
+          </Router>
+        </div>
       </div>
     </AppProvider>
   );

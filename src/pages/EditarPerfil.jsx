@@ -18,7 +18,7 @@ export default function EditarPerfil() {
   } = useAppContext();
 
   return (
-    <section className="screen active w-[375px] h-[812px] bg-[#F8FAFC] rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black">
+    <section className="w-full h-full bg-[#F8FAFC] overflow-hidden flex flex-col relative">
       <header className="flex items-center p-4 sticky top-0 bg-[#F8FAFC] z-10 border-b border-gray-100">
         <button
           aria-label="Back"

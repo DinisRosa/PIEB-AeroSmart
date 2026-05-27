@@ -22,7 +22,7 @@ export default function Tutorial() {
   };
 
   return (
-    <section className="screen active w-[375px] h-[812px] bg-white rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black">
+    <section className="w-full h-full bg-white overflow-hidden flex flex-col relative">
       <header className="p-6 pb-2">
         <div className="flex items-center justify-between mb-4">
           <button aria-label="Voltar" className="p-2 -ml-2" onClick={() => navigate('/lembretes')}>

@@ -14,7 +14,7 @@ export default function Perfil() {
   } = useAppContext();
 
   return (
-    <section className="screen active w-[375px] h-[812px] bg-slate-50 rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black">
+    <section className="w-full h-full bg-slate-50 overflow-hidden flex flex-col relative">
       <header className="flex items-center justify-between px-6 py-4 bg-white sticky top-0 z-10 border-b border-slate-100">
         <div className="flex items-center gap-3">
           <img src="/logo.jpg" alt="AeroSmart" className="w-10 h-10 rounded-full object-contain" />

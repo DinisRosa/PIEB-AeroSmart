@@ -22,7 +22,7 @@ export default function Registry() {
   };
 
   return (
-    <section className="screen active w-[375px] h-[812px] bg-[#F8FAFC] rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black">
+    <section className="w-full h-full bg-[#F8FAFC] overflow-hidden flex flex-col relative">
       <div className="px-6 pt-12">
         <button
           className="flex items-center gap-2 text-brand-blue font-bold text-xs hover:opacity-70 transition-opacity"

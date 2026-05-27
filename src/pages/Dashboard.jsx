@@ -8,7 +8,7 @@ export default function Dashboard() {
   const { setPreviousScreen } = useAppContext();
 
   return (
-    <section className="screen active w-[375px] h-[812px] bg-[#F8FAFC] rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black">
+    <section className="w-full h-full bg-[#F8FAFC] overflow-hidden flex flex-col relative">
       <div className="px-6 pt-12 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="AeroSmart" className="w-8 h-8 rounded-full object-contain" />

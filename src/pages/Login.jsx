@@ -6,7 +6,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   return (
-    <section className="screen active w-[375px] h-[812px] bg-white rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black">
+    <section className="w-full h-full bg-white overflow-hidden flex flex-col relative">
       <div className="px-8 pt-16 flex flex-col items-center flex-1 overflow-y-auto pb-8">
         <img
           src="/logo.png"

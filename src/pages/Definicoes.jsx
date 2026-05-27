@@ -7,7 +7,7 @@ export default function Definicoes() {
   const { previousScreen } = useAppContext();
 
   return (
-    <section className="screen active w-[375px] h-[812px] bg-white rounded-[40px] shadow-2xl overflow-hidden flex-col relative border-[8px] border-black">
+    <section className="w-full h-full bg-white overflow-hidden flex flex-col relative">
       <header className="flex items-center px-6 py-6" data-purpose="app-navigation">
         <button
           className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 mr-4"
