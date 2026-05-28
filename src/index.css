@@ -337,6 +337,44 @@ input[type="time"] {
   contain: layout;
 }
 
+/* ─── Desktop responsive overrides (lg+) ───────────────────────────────── */
+@media (min-width: 1024px) {
+  /* Pages fill the full desktop main area */
+  section.w-full.h-full {
+    height: 100%;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  /* Remove bottom padding reserved for mobile bottom nav */
+  .pb-24 {
+    padding-bottom: var(--spacing-xl) !important;
+  }
+
+  /* Wider content areas on desktop */
+  .max-w-md {
+    max-width: 100%;
+  }
+
+  /* Desktop page content padding */
+  .px-6 {
+    padding-left: var(--spacing-xl);
+    padding-right: var(--spacing-xl);
+  }
+
+  /* Compact header: wider on desktop */
+  .compact-header {
+    padding-left: var(--spacing-xl);
+    padding-right: var(--spacing-xl);
+  }
+
+  /* Hide the mobile bottom nav on desktop (rendered as sidebar instead) */
+  nav.absolute.bottom-0 {
+    display: none;
+  }
+}
+
 /* ─── Títulos de secção normalizados (T6) ──────────────────────────────── */
 .section-title {
   margin-top: var(--spacing-lg);
