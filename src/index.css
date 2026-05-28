@@ -346,9 +346,6 @@ input[type="time"] {
   /* Pages fill the full desktop main area */
   section.w-full.h-full {
     height: 100%;
-    min-height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
   }
 
   /* Remove bottom padding reserved for mobile bottom nav */

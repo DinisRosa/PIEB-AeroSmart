@@ -105,8 +105,8 @@ function AppLayout() {
 
         {/* Main content */}
         <main className="flex-1 overflow-hidden flex flex-col">
-          <div className="flex-1 overflow-y-auto">
-            <div className="max-w-5xl mx-auto w-full h-full">
+          <div className="flex-1 flex flex-col">
+            <div className="max-w-5xl mx-auto w-full h-full relative overflow-hidden flex flex-col">
               {routes}
             </div>
           </div>
