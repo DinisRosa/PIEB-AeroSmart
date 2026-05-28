@@ -8,7 +8,8 @@ export default function Definicoes() {
 
   return (
     <section className="w-full h-full bg-white overflow-hidden flex flex-col relative">
-      <header className="flex items-center px-6 py-6" data-purpose="app-navigation">
+      {/* T2: Header compacto */}
+      <header className="compact-header" data-purpose="app-navigation">
         <button
           className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 mr-4"
           onClick={() => navigate(previousScreen)}
@@ -17,12 +18,13 @@ export default function Definicoes() {
             <path d="M10 19l-7-7m0 0l7-7m-7 7h18" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
           </svg>
         </button>
-        <span className="font-bold text-slate-800 text-lg">Definições</span>
+        <span className="font-bold text-slate-800" style={{ fontSize: 'var(--font-size-lg)' }}>Definições</span>
       </header>
 
       <div className="flex-1 overflow-y-auto px-0 pb-24">
         <section className="px-6 mb-6">
-          <h1 className="text-3xl font-extrabold text-slate-800 mb-2">Definições</h1>
+        {/* T6: Título com espaçamento reduzido */}
+        <h1 className="text-3xl font-extrabold text-slate-800" style={{ marginBottom: 'var(--spacing-sm)' }}>Definições</h1>
           <p className="text-slate-500 text-sm leading-snug">
             Personalize a sua experiência de cuidados e a conectividade do dispositivo.
           </p>
@@ -43,11 +45,12 @@ export default function Definicoes() {
             <p className="text-slate-500 text-sm mb-8 leading-relaxed">
               Última sincronização hoje às 08:45.<br />Nível da bateria a 84%.
             </p>
+            {/* T5: Botões com min-height 44px */}
             <div className="flex gap-3">
-              <button className="flex-1 bg-blue-700 text-white font-bold py-4 px-2 rounded-3xl text-sm transition active:scale-95">
+              <button className="action-btn flex-1 bg-blue-700 text-white text-sm transition">
                 Reconectar
               </button>
-              <button className="flex-1 bg-slate-200 text-blue-800 font-bold py-4 px-2 rounded-3xl text-sm transition active:scale-95">
+              <button className="action-btn flex-1 bg-slate-200 text-blue-800 text-sm transition">
                 Detalhes
               </button>
             </div>

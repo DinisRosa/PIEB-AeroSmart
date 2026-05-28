@@ -23,7 +23,7 @@ export default function Registry() {
 
   return (
     <section className="w-full h-full bg-[#F8FAFC] overflow-hidden flex flex-col relative">
-      <div className="px-6 pt-12">
+      <div className="px-6 pt-safe-top pt-4">
         <button
           className="flex items-center gap-2 text-brand-blue font-bold text-xs hover:opacity-70 transition-opacity"
           onClick={() => navigate('/dashboard')}

@@ -5,7 +5,7 @@ export default function Rotina() {
 
   return (
     <section className="w-full h-full bg-white overflow-hidden flex flex-col relative">
-      <div className="px-6 pt-12 pb-3 border-b border-gray-50">
+      <div className="px-6 pt-safe-top pt-4 pb-3 border-b border-gray-50">
         <button
           className="flex items-center gap-2 text-brand-blue font-bold text-sm hover:opacity-70 transition-opacity"
           onClick={() => navigate('/lembretes')}

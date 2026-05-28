@@ -15,17 +15,18 @@ export default function Perfil() {
 
   return (
     <section className="w-full h-full bg-slate-50 overflow-hidden flex flex-col relative">
-      <header className="flex items-center justify-between px-6 py-4 bg-white sticky top-0 z-10 border-b border-slate-100">
+      {/* T2: Header compacto — minHeight 52px */}
+      <header className="compact-header justify-between bg-white border-b border-slate-100 sticky top-0 z-10">
         <div className="flex items-center gap-3">
-          <img src="/logo.jpg" alt="AeroSmart" className="w-10 h-10 rounded-full object-contain" />
-          <span className="text-brand-blue font-bold text-lg">AeroSmart</span>
+          <img src="/logo.jpg" alt="AeroSmart" className="w-9 h-9 rounded-full object-contain" />
+          <span className="text-brand-blue font-bold" style={{ fontSize: 'var(--font-size-lg)' }}>AeroSmart</span>
         </div>
         <button
           aria-label="Configurações"
           className="p-2 text-slate-500"
           onClick={() => { setPreviousScreen('/perfil'); navigate('/definicoes'); }}
         >
-          <SettingsIcon className="w-6 h-6" />
+          <SettingsIcon style={{ width: 22, height: 22 }} />
         </button>
       </header>
 
@@ -54,8 +55,9 @@ export default function Perfil() {
           <p className="text-slate-500 text-sm font-medium">ID do Paciente: CS-88203-ER</p>
         </section>
 
+        {/* T4: Grid 2 colunas — minHeight 80px + flex-col para altura uniforme */}
         <section className="grid grid-cols-2 gap-4">
-          <div className="bg-white p-4 rounded-2xl card-shadow border border-slate-100 flex flex-col items-start">
+          <div className="bg-white p-4 rounded-2xl card-shadow border border-slate-100 flex flex-col items-start" style={{ minHeight: 80 }}>
             <div className="bg-emerald-50 p-2 rounded-lg mb-2">
               <svg className="text-emerald-600" fill="none" height="20" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="20">
                 <rect height="18" rx="2" ry="2" width="18" x="3" y="4" />
@@ -67,7 +69,7 @@ export default function Perfil() {
             <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Idade</span>
             <span className="text-lg font-bold text-slate-700">{profileAge} Anos</span>
           </div>
-          <div className="bg-white p-4 rounded-2xl card-shadow border border-slate-100 flex flex-col items-start">
+          <div className="bg-white p-4 rounded-2xl card-shadow border border-slate-100 flex flex-col items-start" style={{ minHeight: 80 }}>
             <div className="bg-orange-50 p-2 rounded-lg mb-2">
               <svg className="text-orange-600" fill="none" height="20" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="20">
                 <path d="m7.5 10.5 6.5-6.5L20 10.5Z" />
@@ -165,7 +167,8 @@ export default function Perfil() {
           </div>
         </section>
 
-        <section className="bg-white rounded-3xl border border-slate-100 overflow-hidden card-shadow">
+        {/* T3: health-profile-container previne layout shift durante scroll */}
+        <section className="health-profile-container bg-white rounded-3xl border border-slate-100 card-shadow">
           <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
             <h3 className="text-base font-bold text-slate-800">Perfil de Saúde</h3>
           </div>

@@ -9,7 +9,7 @@ export default function Lembretes() {
 
   return (
     <section className="w-full h-full bg-[#F8FAFC] overflow-hidden flex flex-col relative">
-      <div className="px-6 pt-12 pb-3 flex justify-between items-center bg-white border-b border-gray-50">
+      <div className="px-6 pt-safe-top pt-4 pb-3 flex justify-between items-center bg-white border-b border-gray-50">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="AeroSmart" className="w-8 h-8 rounded-full object-contain" />
           <span className="text-xs font-bold text-brand-blue">AeroSmart</span>

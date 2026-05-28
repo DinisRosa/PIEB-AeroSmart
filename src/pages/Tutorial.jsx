@@ -23,8 +23,9 @@ export default function Tutorial() {
 
   return (
     <section className="w-full h-full bg-white overflow-hidden flex flex-col relative">
-      <header className="p-6 pb-2">
-        <div className="flex items-center justify-between mb-4">
+      {/* T2: Header compacto — padding reduzido */}
+      <header className="px-6 pt-3 pb-2">
+        <div className="flex items-center justify-between mb-3" style={{ minHeight: 52 }}>
           <button aria-label="Voltar" className="p-2 -ml-2" onClick={() => navigate('/lembretes')}>
             <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path d="M10 19l-7-7m0 0l7-7m-7 7h18" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
@@ -64,21 +65,22 @@ export default function Tutorial() {
         </div>
       </main>
 
+      {/* T5: Botões de navegação com min-height 44px */}
       <footer className="p-8 space-y-3 pb-10">
         <div className="flex gap-3">
           <button
             onClick={prevTutorialStep}
-            className={`flex-1 bg-gray-100 text-gray-500 font-bold py-4 rounded-xl hover:bg-gray-200 transition-colors ${currentTutorialStep === 0 ? 'opacity-50 pointer-events-none' : ''}`}
+            className={`action-btn flex-1 bg-gray-100 text-gray-500 rounded-xl hover:bg-gray-200 transition-colors ${currentTutorialStep === 0 ? 'opacity-50 pointer-events-none' : ''}`}
           >
             Anterior
           </button>
           <button
             onClick={nextTutorialStep}
-            className="flex-1 bg-slate-900 text-white flex justify-center items-center gap-2 font-bold py-4 rounded-xl hover:opacity-90 transition-colors"
+            className="action-btn flex-1 bg-slate-900 text-white rounded-xl hover:opacity-90 transition-colors"
           >
             {currentTutorialStep === 4 ? (
               <>
-                Concluir <CheckCircle className="w-5 h-5" />
+                Concluir <CheckCircle className="w-5 h-5 ml-2" />
               </>
             ) : (
               'Próximo'

@@ -10,18 +10,20 @@ export default function Historico() {
 
   return (
     <section className="w-full h-full bg-[#F8FAFC] overflow-hidden flex flex-col relative">
-      <div className="px-6 pt-12 flex justify-between items-center">
+      {/* T2: Header compacto */}
+      <div className="compact-header justify-between">
         <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="AeroSmart" className="w-8 h-8 rounded-full object-contain" />
+          <img src="/logo.png" alt="AeroSmart" className="w-7 h-7 rounded-full object-contain" />
           <span className="text-xs font-bold text-brand-blue">AeroSmart</span>
         </div>
         <button className="text-gray-400" onClick={() => { setPreviousScreen('/historico'); navigate('/definicoes'); }}>
-          <SettingsIcon className="w-5 h-5" />
+          <SettingsIcon style={{ width: 22, height: 22 }} />
         </button>
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 pb-24">
-        <div className="py-4">
+        {/* T6: Título com espaçamento reduzido */}
+        <div className="pt-2 pb-2">
           <h1 className="text-3xl font-bold text-gray-900 leading-tight">Histórico de<br />Utilização</h1>
           <p className="text-gray-400 mt-1 text-xs">Acompanhe a sua jornada respiratória.</p>
         </div>

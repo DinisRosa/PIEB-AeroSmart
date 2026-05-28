@@ -7,7 +7,7 @@ export default function Login() {
 
   return (
     <section className="w-full h-full bg-white overflow-hidden flex flex-col relative">
-      <div className="px-8 pt-16 flex flex-col items-center flex-1 overflow-y-auto pb-8">
+      <div className="px-8 pt-safe-top pt-4 flex flex-col items-center flex-1 overflow-y-auto pb-8">
         <img
           src="/logo.png"
           alt="AeroSmart Logo"

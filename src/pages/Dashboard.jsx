@@ -9,19 +9,22 @@ export default function Dashboard() {
 
   return (
     <section className="w-full h-full bg-[#F8FAFC] overflow-hidden flex flex-col relative">
-      <div className="px-6 pt-12 flex justify-between items-center">
+      {/* T2: Header compacto — minHeight 52px, safe-area-inset-top */}
+      <div className="compact-header justify-between">
         <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="AeroSmart" className="w-8 h-8 rounded-full object-contain" />
+          <img src="/logo.png" alt="AeroSmart" className="w-7 h-7 rounded-full object-contain" />
           <span className="text-xs font-bold text-brand-blue">AeroSmart</span>
         </div>
         <button className="text-gray-400" onClick={() => { setPreviousScreen('/dashboard'); navigate('/definicoes'); }}>
-          <SettingsIcon className="w-5 h-5" />
+          {/* T2: ícone reduzido de w-5 h-5 para 22px */}
+          <SettingsIcon style={{ width: 22, height: 22 }} />
         </button>
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 pb-24">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Bom dia, João.</h2>
+        {/* T6: Título com espaçamento normalizado */}
+        <div className="mt-2">
+          <h2 className="section-title" style={{ marginTop: 0 }}>Bom dia, João.</h2>
           <p className="text-xs text-gray-400 font-medium">Pronto para a tua rotina diária?</p>
         </div>
 
@@ -79,8 +82,9 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* T4: Grid 2 colunas — confirmar minHeight e alignItems */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white rounded-3xl p-5 border border-gray-100">
+          <div className="bg-white rounded-3xl p-5 border border-gray-100" style={{ minHeight: 80, display: 'flex', flexDirection: 'column' }}>
             <div className="flex justify-between items-start mb-4">
               <svg className="w-4 h-4 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path d="M6.5 6.5l11 11L12 23V1l5.5 5.5-11 11" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
@@ -90,7 +94,7 @@ export default function Dashboard() {
             <p className="font-bold text-sm">Conectado</p>
             <p className="text-[8px] text-gray-400">Sincronizado há 2m</p>
           </div>
-          <div className="bg-white rounded-3xl p-5 border border-gray-100">
+          <div className="bg-white rounded-3xl p-5 border border-gray-100" style={{ minHeight: 80, display: 'flex', flexDirection: 'column' }}>
             <div className="flex justify-between items-start mb-4">
               <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M4.5 10.5h12.75V15H4.5v-4.5zM3.75 18h15a2.25 2.25 0 002.25-2.25V8.25A2.25 2.25 0 0018.75 6H3.75A2.25 2.25 0 001.5 8.25v7.5A2.25 2.25 0 003.75 18z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
