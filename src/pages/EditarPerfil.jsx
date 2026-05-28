@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+import Header from '../components/layout/Header';
 
 export default function EditarPerfil() {
   const navigate = useNavigate();
@@ -19,18 +20,12 @@ export default function EditarPerfil() {
 
   return (
     <section className="w-full h-full bg-[#F8FAFC] overflow-hidden flex flex-col relative">
-      <header className="flex items-center p-4 sticky top-0 bg-[#F8FAFC] z-10 border-b border-gray-100">
-        <button
-          aria-label="Back"
-          className="p-2 text-brand-blue"
-          onClick={() => navigate('/perfil')}
-        >
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path d="M10 19l-7-7m0 0l7-7m-7 7h18" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
-          </svg>
-        </button>
-        <h1 className="text-lg font-bold text-brand-blue ml-4">Editar Perfil</h1>
-      </header>
+      <Header 
+        title="Editar Perfil" 
+        showBack={true} 
+        onBack={() => navigate('/perfil')} 
+        className="bg-[#F8FAFC]"
+      />
 
       <div className="flex-1 overflow-y-auto px-5 pb-24">
         <section className="flex flex-col items-center my-6">

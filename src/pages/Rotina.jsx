@@ -1,21 +1,17 @@
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/layout/Header';
 
 export default function Rotina() {
   const navigate = useNavigate();
 
   return (
     <section className="w-full h-full bg-white overflow-hidden flex flex-col relative">
-      <div className="px-6 pt-safe-top pt-4 pb-3 border-b border-gray-50">
-        <button
-          className="flex items-center gap-2 text-brand-blue font-bold text-sm hover:opacity-70 transition-opacity"
-          onClick={() => navigate('/lembretes')}
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path d="M10 19l-7-7m0 0l7-7m-7 7h18" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-          </svg>
-          Plano de Medicação
-        </button>
-      </div>
+      <Header 
+        title="Plano de Medicação"
+        showBack={true} 
+        onBack={() => navigate('/lembretes')} 
+        className="bg-white"
+      />
 
       <div className="flex-1 overflow-y-auto px-6 pb-10 pt-5 space-y-5">
         <div>

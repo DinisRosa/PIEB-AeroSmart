@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+import Header from '../components/layout/Header';
 
 export default function Registry() {
   const navigate = useNavigate();
@@ -23,17 +24,11 @@ export default function Registry() {
 
   return (
     <section className="w-full h-full bg-[#F8FAFC] overflow-hidden flex flex-col relative">
-      <div className="px-6 pt-safe-top pt-4">
-        <button
-          className="flex items-center gap-2 text-brand-blue font-bold text-xs hover:opacity-70 transition-opacity"
-          onClick={() => navigate('/dashboard')}
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path d="M10 19l-7-7m0 0l7-7m-7 7h18" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-          </svg>
-          Voltar ao Início
-        </button>
-      </div>
+      <Header 
+        showBack={true} 
+        onBack={() => navigate('/dashboard')} 
+        className="bg-[#F8FAFC]"
+      />
 
       <div className="px-8 py-6 flex flex-col flex-1 overflow-y-auto pb-8">
         <h1 className="text-4xl font-bold text-gray-900 leading-[1.1]">Registar<br />Inalação</h1>

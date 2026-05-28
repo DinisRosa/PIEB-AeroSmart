@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { Settings as SettingsIcon } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
-import BottomNav from '../components/layout/BottomNav';
+import Menu from '../components/layout/Menu';
+import Header from '../components/layout/Header';
 
 export default function Dados() {
   const navigate = useNavigate();
@@ -9,15 +10,13 @@ export default function Dados() {
 
   return (
     <section className="w-full h-full bg-[#F8FAFC] overflow-hidden flex flex-col relative">
-      <div className="px-6 pt-safe-top pt-4 flex justify-between items-center bg-white border-b border-slate-50">
-        <div className="flex items-center gap-3 pb-3">
-          <img src="/logo.png" alt="AeroSmart" className="w-8 h-8 rounded-full object-contain" />
-          <span className="text-xs font-bold text-brand-blue">AeroSmart</span>
-        </div>
-        <button className="text-gray-400 pb-3" onClick={() => { setPreviousScreen('/dados'); navigate('/definicoes'); }}>
-          <SettingsIcon className="w-5 h-5" />
-        </button>
-      </div>
+      <Header 
+        rightAction={
+          <button className="text-gray-400" onClick={() => { setPreviousScreen('/dados'); navigate('/definicoes'); }}>
+            <SettingsIcon className="w-5 h-5" />
+          </button>
+        }
+      />
 
       <div className="flex-1 overflow-y-auto px-5 pb-24 space-y-4 pt-4">
         <div>
@@ -181,7 +180,7 @@ export default function Dados() {
         </div>
       </div>
 
-      <BottomNav />
+      <Menu />
     </section>
   );
 }

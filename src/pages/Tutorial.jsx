@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import { tutorialSteps } from '../data/mockData';
+import Header from '../components/layout/Header';
 
 export default function Tutorial() {
   const navigate = useNavigate();
@@ -23,29 +24,20 @@ export default function Tutorial() {
 
   return (
     <section className="w-full h-full bg-white overflow-hidden flex flex-col relative">
-      {/* T2: Header compacto — padding reduzido */}
-      <header className="px-6 pt-3 pb-2">
-        <div className="flex items-center justify-between mb-3" style={{ minHeight: 52 }}>
-          <button aria-label="Voltar" className="p-2 -ml-2" onClick={() => navigate('/lembretes')}>
-            <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path d="M10 19l-7-7m0 0l7-7m-7 7h18" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
-            </svg>
-          </button>
-          <div className="text-center flex-1">
-            <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">Guia Instrucional</p>
-            <p className="text-sm font-extrabold text-gray-800">
-              Passo {currentTutorialStep + 1} de 5
-            </p>
-          </div>
-          <div className="w-10"></div>
-        </div>
+      <Header 
+        title={`Passo ${currentTutorialStep + 1} de 5`}
+        showBack={true}
+        onBack={() => navigate('/lembretes')}
+        className="bg-white border-none"
+      />
+      <div className="px-6 pb-3 bg-white border-b border-slate-50">
         <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
           <div
-            className="bg-blue-600 h-full transition-all duration-300"
+            className="bg-brand-blue h-full transition-all duration-300"
             style={{ width: `${tutorialSteps[currentTutorialStep].progress}%` }}
           ></div>
         </div>
-      </header>
+      </div>
 
       <main className="flex-grow px-8 pt-4 flex flex-col overflow-y-auto">
         <div className="bg-blue-100 rounded-3xl w-full aspect-square relative flex items-center justify-center overflow-hidden mb-8">

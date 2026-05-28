@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { Settings as SettingsIcon } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
-import BottomNav from '../components/layout/BottomNav';
+import Menu from '../components/layout/Menu';
+import Header from '../components/layout/Header';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -9,17 +10,14 @@ export default function Dashboard() {
 
   return (
     <section className="w-full h-full bg-[#F8FAFC] overflow-hidden flex flex-col relative">
-      {/* T2: Header compacto — minHeight 52px, safe-area-inset-top */}
-      <div className="compact-header justify-between">
-        <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="AeroSmart" className="w-7 h-7 rounded-full object-contain" />
-          <span className="text-xs font-bold text-brand-blue">AeroSmart</span>
-        </div>
-        <button className="text-gray-400" onClick={() => { setPreviousScreen('/dashboard'); navigate('/definicoes'); }}>
-          {/* T2: ícone reduzido de w-5 h-5 para 22px */}
-          <SettingsIcon style={{ width: 22, height: 22 }} />
-        </button>
-      </div>
+      {/* T2: Header genérico */}
+      <Header 
+        rightAction={
+          <button className="text-gray-400" onClick={() => { setPreviousScreen('/dashboard'); navigate('/definicoes'); }}>
+            <SettingsIcon style={{ width: 22, height: 22 }} />
+          </button>
+        }
+      />
 
       <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 pb-24">
         {/* T6: Título com espaçamento normalizado */}
@@ -134,7 +132,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <BottomNav />
+      <Menu />
     </section>
   );
 }

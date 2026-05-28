@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 
-export default function BottomNav({ desktop = false }) {
+export default function Menu({ desktop = false }) {
   const location = useLocation();
   const currentPath = location.pathname;
 

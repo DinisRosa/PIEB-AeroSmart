@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { Settings as SettingsIcon } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
-import BottomNav from '../components/layout/BottomNav';
+import Menu from '../components/layout/Menu';
+import Header from '../components/layout/Header';
 
 export default function Lembretes() {
   const navigate = useNavigate();
@@ -9,15 +10,13 @@ export default function Lembretes() {
 
   return (
     <section className="w-full h-full bg-[#F8FAFC] overflow-hidden flex flex-col relative">
-      <div className="px-6 pt-safe-top pt-4 pb-3 flex justify-between items-center bg-white border-b border-gray-50">
-        <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="AeroSmart" className="w-8 h-8 rounded-full object-contain" />
-          <span className="text-xs font-bold text-brand-blue">AeroSmart</span>
-        </div>
-        <button className="text-gray-400" onClick={() => { setPreviousScreen('/lembretes'); navigate('/definicoes'); }}>
-          <SettingsIcon className="w-5 h-5" />
-        </button>
-      </div>
+      <Header 
+        rightAction={
+          <button className="text-gray-400" onClick={() => { setPreviousScreen('/lembretes'); navigate('/definicoes'); }}>
+            <SettingsIcon className="w-5 h-5" />
+          </button>
+        }
+      />
 
       <div className="flex-1 overflow-y-auto px-6 pb-24 pt-4 space-y-5">
         <div>
@@ -111,7 +110,7 @@ export default function Lembretes() {
         </div>
       </div>
 
-      <BottomNav />
+      <Menu />
     </section>
   );
 }
