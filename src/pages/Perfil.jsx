@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { Settings as SettingsIcon } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
-import BottomNav from '../components/layout/BottomNav';
+import Menu from '../components/layout/Menu';
+import Header from '../components/layout/Header';
 
 export default function Perfil() {
   const navigate = useNavigate();
@@ -15,20 +16,19 @@ export default function Perfil() {
 
   return (
     <section className="w-full h-full bg-slate-50 overflow-hidden flex flex-col relative">
-      {/* T2: Header compacto — minHeight 52px */}
-      <header className="compact-header justify-between bg-white border-b border-slate-100 sticky top-0 z-10">
-        <div className="flex items-center gap-3">
-          <img src="/logo.jpg" alt="AeroSmart" className="w-9 h-9 rounded-full object-contain" />
-          <span className="text-brand-blue font-bold" style={{ fontSize: 'var(--font-size-lg)' }}>AeroSmart</span>
-        </div>
-        <button
-          aria-label="Configurações"
-          className="p-2 text-slate-500"
-          onClick={() => { setPreviousScreen('/perfil'); navigate('/definicoes'); }}
-        >
-          <SettingsIcon style={{ width: 22, height: 22 }} />
-        </button>
-      </header>
+      {/* T2: Header genérico */}
+      <Header 
+        className="bg-white sticky top-0 z-10"
+        rightAction={
+          <button
+            aria-label="Configurações"
+            className="p-2 text-slate-500"
+            onClick={() => { setPreviousScreen('/perfil'); navigate('/definicoes'); }}
+          >
+            <SettingsIcon style={{ width: 22, height: 22 }} />
+          </button>
+        }
+      />
 
       <div className="flex-1 overflow-y-auto px-6 py-4 space-y-8 pb-24">
         <section className="flex flex-col items-center text-center mt-4">
@@ -213,7 +213,7 @@ export default function Perfil() {
         </section>
       </div>
 
-      <BottomNav />
+      <Menu />
     </section>
   );
 }

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Bluetooth, Volume2, Share2, ShieldCheck } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
+import Header from '../components/layout/Header';
 
 export default function Definicoes() {
   const navigate = useNavigate();
@@ -8,18 +9,13 @@ export default function Definicoes() {
 
   return (
     <section className="w-full h-full bg-white overflow-hidden flex flex-col relative">
-      {/* T2: Header compacto */}
-      <header className="compact-header" data-purpose="app-navigation">
-        <button
-          className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 mr-4"
-          onClick={() => navigate(previousScreen)}
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path d="M10 19l-7-7m0 0l7-7m-7 7h18" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-          </svg>
-        </button>
-        <span className="font-bold text-slate-800" style={{ fontSize: 'var(--font-size-lg)' }}>Definições</span>
-      </header>
+      {/* T2: Header genérico */}
+      <Header 
+        title="Definições" 
+        showBack={true} 
+        onBack={() => navigate(previousScreen)} 
+        className="bg-white"
+      />
 
       <div className="flex-1 overflow-y-auto px-0 pb-24">
         <section className="px-6 mb-6">

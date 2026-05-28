@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AppProvider, useAppContext } from './context/AppContext';
-import BottomNav from './components/layout/BottomNav';
+import Menu from './components/layout/Menu';
 
 // Pages
 import Login from './pages/Login';
@@ -70,7 +70,7 @@ function AppLayout() {
   if (hideNav) {
     // Login page: phone frame on mobile, centered card on desktop
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0e0e14]">
+      <div className="flex items-center justify-center min-h-[100dvh] bg-[#0e0e14]">
         <div className="w-full max-w-md h-[100dvh] lg:h-auto lg:min-h-[600px] lg:max-h-[800px] lg:rounded-3xl bg-white shadow-2xl relative overflow-hidden flex flex-col lg:border lg:border-white/10">
           {routes}
         </div>
@@ -95,8 +95,8 @@ function AppLayout() {
               <p className="text-[10px] text-slate-400 font-medium mt-0.5">Health Monitor</p>
             </div>
           </div>
-          {/* Nav items — rendered by BottomNav in desktop mode */}
-          <BottomNav desktop />
+          {/* Nav items — rendered by Menu in desktop mode */}
+          <Menu desktop />
           {/* Bottom branding */}
           <div className="mt-auto px-6 py-4 border-t border-slate-50">
             <p className="text-[10px] text-slate-300 font-medium">v1.0 · AeroSmart © 2025</p>
@@ -114,7 +114,7 @@ function AppLayout() {
       </div>
 
       {/* ─── MOBILE LAYOUT (< lg) ─── */}
-      <div className="lg:hidden flex flex-col items-center justify-center min-h-screen bg-gray-100 font-sans">
+      <div className="lg:hidden flex flex-col items-center justify-center min-h-[100dvh] bg-gray-100 font-sans">
         <div className="w-full max-w-md h-[100dvh] mx-auto bg-white shadow-2xl sm:rounded-2xl sm:h-[95dvh] sm:border sm:border-gray-300 relative overflow-hidden flex flex-col">
           {routes}
         </div>
