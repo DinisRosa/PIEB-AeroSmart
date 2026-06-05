@@ -189,7 +189,7 @@ Para uma descrição exaustiva de todas as páginas, componentes, estado global,
 Lista de melhorias identificadas para versões futuras do AeroSmart:
 
 | # | Melhoria |
-|---|---|---|
+|---|---|
 | 1 | **Variáveis globais de tipografia** — centralizar todos os `fontSize` e `fontWeight` em `theme.js` |
 | 2 | **Top bar mais compacta** — reduzir altura do cabeçalho e usar `SafeAreaInsets` corretamente |
 | 3 | **Correção do scroll saltitante** no Perfil de Saúde (reflows de layout durante animações) |
