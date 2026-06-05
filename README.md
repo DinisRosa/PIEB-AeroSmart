@@ -184,21 +184,4 @@ Para uma descrição exaustiva de todas as páginas, componentes, estado global,
 
 ---
 
-## Melhorias Futuras
-
-Lista de melhorias identificadas para versões futuras do AeroSmart:
-
-| # | Melhoria |
-|---|---|
-| 1 | **Variáveis globais de tipografia** — centralizar todos os `fontSize` e `fontWeight` em `theme.js` |
-| 2 | **Top bar mais compacta** — reduzir altura do cabeçalho e usar `SafeAreaInsets` corretamente |
-| 3 | **Correção do scroll saltitante** no Perfil de Saúde (reflows de layout durante animações) |
-| 4 | **Cards em grid de 2 colunas** na tela Início (Idade, Condição, etc.) |
-| 5 | **Botões full-width** nas telas Definições e Guia Instrucional (área de toque ≥ 44px) |
-| 6 | **Espaçamento de títulos** — reduzir margem entre título de secção e conteúdo |
-| 7 | **Backend real** — autenticação, persistência de dados e sincronização com sensor |
-| 8 | **Integração Bluetooth** — leitura de dados reais do inalador via sensor |
-
----
-
 © 2025 AeroSmart · v1.0 · Projeto Integrado (PI)
