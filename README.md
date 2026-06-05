@@ -4,6 +4,21 @@
 
 ---
 
+## Autores
+
+Este projeto foi desenvolvido por:
+
+| Nome | Número de Aluno |
+|---|---|
+| Lara Rodrigues | A107282 |
+| Maria Carneiro | A107242 |
+| Sofia Saraiva | A107249 |
+| Dinis Rosa | A107159 |
+
+No âmbito da unidade curricular de **Projeto Integrador em Engenharia Biomédica**, 3º ano da Licenciatura em Engenharia Biomédica da **Universidade do Minho** — 2º Semestre 2025/2026.
+
+---
+
 ## Sobre o Projeto
 
 O **AeroSmart** é uma app móvel-first que ajuda pacientes com asma e outras condições respiratórias a gerir o tratamento com inaladores. Permite registar inalações, consultar histórico, visualizar dados de técnica, gerir lembretes e manter um perfil de saúde completo.
