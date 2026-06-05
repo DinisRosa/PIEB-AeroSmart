@@ -104,7 +104,6 @@ App-PI/
 │   ├── logo.png             # Logótipo AeroSmart
 │   └── passo1-5.png         # Imagens do tutorial (5 passos)
 ├── documentos/
-│   ├── melhorias.md         # Plano de melhorias UI/UX
 │   └── project_summary.md  # Resumo completo do projeto ← ler isto primeiro
 └── src/
     ├── App.jsx              # Router principal + layouts desktop/mobile
@@ -182,6 +181,23 @@ Para uma descrição exaustiva de todas as páginas, componentes, estado global,
 - **Sem backend** — todos os dados são mock. Nada é persistido ao recarregar a página.
 - **Login decorativo** — qualquer email/password permite entrar.
 - A pasta `dist/` (build) e `node_modules/` estão no `.gitignore` e **não devem ser commitadas**.
+
+---
+
+## Melhorias Futuras
+
+Lista de melhorias identificadas para versões futuras do AeroSmart:
+
+| # | Melhoria |
+|---|---|---|
+| 1 | **Variáveis globais de tipografia** — centralizar todos os `fontSize` e `fontWeight` em `theme.js` |
+| 2 | **Top bar mais compacta** — reduzir altura do cabeçalho e usar `SafeAreaInsets` corretamente |
+| 3 | **Correção do scroll saltitante** no Perfil de Saúde (reflows de layout durante animações) |
+| 4 | **Cards em grid de 2 colunas** na tela Início (Idade, Condição, etc.) |
+| 5 | **Botões full-width** nas telas Definições e Guia Instrucional (área de toque ≥ 44px) |
+| 6 | **Espaçamento de títulos** — reduzir margem entre título de secção e conteúdo |
+| 7 | **Backend real** — autenticação, persistência de dados e sincronização com sensor |
+| 8 | **Integração Bluetooth** — leitura de dados reais do inalador via sensor |
 
 ---
 
