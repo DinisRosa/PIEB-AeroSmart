@@ -442,24 +442,7 @@ A tab ativa é determinada por `useLocation().pathname`.
 
 ---
 
-## 11. Documentação Interna (`documentos/melhorias.md`)
-
-Plano de 6 tarefas de melhoria UI/UX (para implementação futura):
-
-| # | Tarefa | Prioridade | Estado |
-|---|---|---|---|
-| T1 | Variáveis globais de tipografia em `theme.js` | 🔴 Alta | ✅ Implementado |
-| T2 | Redução da top bar (52px, safe-area) | 🔴 Alta | ✅ Implementado |
-| T3 | Correção do bug de layout saltitante (Perfil de Saúde) | 🔴 Alta | ✅ Implementado |
-| T4 | Layout de cards em grid 2 colunas | 🟡 Média | ✅ Implementado |
-| T5 | Ergonomia dos botões (min-height 44px) | 🟡 Média | ✅ Implementado |
-| T6 | Ajuste de hierarquia visual (espaçamento de títulos) | 🟢 Baixa | ✅ Implementado |
-
-O documento foi escrito originalmente para React Native/Expo mas foi adaptado para React Web/TailwindCSS.
-
----
-
-## 12. Fluxo de Navegação (Mapa)
+## 11. Fluxo de Navegação (Mapa)
 
 ```
 /login
@@ -489,7 +472,7 @@ O documento foi escrito originalmente para React Native/Expo mas foi adaptado pa
 
 ---
 
-## 13. O que Falta / Limitações Atuais
+## 12. O que Falta / Limitações Atuais
 
 1. **Sem backend** — todos os dados são mock/hardcoded ou estado React efémero (perde-se ao recarregar)
 2. **Sem autenticação real** — login aceita qualquer credencial
